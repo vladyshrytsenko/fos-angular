@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu</title>
+</head>
+<body>
+
+<div class="menu">
+  <h2>Menu</h2>
+
+  <h3>Drinks</h3>
+  <table>
+    <tr>
+      <th class="name-column">Name</th>
+      <th class="price-column">Price</th>
+    </tr>
+    <tr *ngFor="let drink of drinks">
+      <td>{{ drink.name }}</td>
+      <td>{{ drink.price }} usd</td>
+      <td>
+        <button type="button" 
+              class="btn" 
+              [ngClass]="{
+                  'btn-success': selectedDrinkId !== drink.id,
+                  'btn-secondary': selectedDrinkId === drink.id
+              }" 
+              (click)="selectDrink(drink.id, drink.price)" 
+              [disabled]="selectedDrinkId !== null && selectedDrinkId !== drink.id">
+        {{ selectedDrinkId === drink.id ? 'Selected' : 'Select' }}
+      </button>
+      </td>
+    </tr>
+  </table>
+
+  <h3>Lunch</h3>
+  <table>
+    <tr>
+      <th class="name-column">Name</th>
+      <th class="price-column">Price</th>
+      <th class="cuisine-column">Cuisine</th>
+    </tr>
+    <tr *ngFor="let meal of meals">
+      <td>{{ meal.name }}</td>
+      <td>{{ meal.price }} usd</td>
+      <td>{{ meal.cuisineName }}</td>
+      <td>
+        <button type="button" 
+              class="btn" 
+              [ngClass]="{
+                  'btn-success': selectedMealId !== meal.id,
+                  'btn-secondary': selectedMealId === meal.id
+              }" 
+              (click)="selectMeal(meal.id, meal.price)" 
+              [disabled]="selectedMealId !== null && selectedMealId !== meal.id">
+        {{ selectedMealId === meal.id ? 'Selected' : 'Select' }}
+      </button>
+      </td>
+    </tr>
+  </table>
+
+  <h3>Desserts</h3>
+  <table>
+    <tr>
+      <th class="name-column">Name</th>
+      <th class="price-column">Price</th>
+      <th class="cuisine-column">Cuisine</th>
+    </tr>
+    <tr *ngFor="let dessert of desserts">
+      <td>{{ dessert.name }}</td>
+      <td>{{ dessert.price }} usd</td>
+      <td>{{ dessert.cuisineName }}</td>
+      <td>
+        <button type="button" 
+              class="btn" 
+              [ngClass]="{
+                  'btn-success': selectedDessertId !== dessert.id,
+                  'btn-secondary': selectedDessertId === dessert.id
+              }" 
+              (click)="selectDessert(dessert.id, dessert.price)" 
+              [disabled]="selectedDessertId !== null && selectedDessertId !== dessert.id">
+        {{ selectedDessertId === dessert.id ? 'Selected' : 'Select' }}
+      </button>
+      </td>
+    </tr>
+  </table>
+
+  <div style="text-align: right;">
+    <h3>Total price: {{orderCustom.totalPrice}} usd</h3>
+    <button type="button" class="btn btn-primary" (click)="submitOrder()">Order now</button>
+  </div>
+
+</div>
+
+</body>
+</html>
