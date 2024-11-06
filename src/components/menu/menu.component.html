@@ -23,12 +23,12 @@
         <button type="button" 
               class="btn" 
               [ngClass]="{
-                  'btn-success': selectedDrinkId !== drink.id,
-                  'btn-secondary': selectedDrinkId === drink.id
+                  'btn-success': selectedDrinkName !== drink.name,
+                  'btn-secondary': selectedDrinkName === drink.name
               }" 
-              (click)="selectDrink(drink.id, drink.price)" 
-              [disabled]="selectedDrinkId !== null && selectedDrinkId !== drink.id">
-        {{ selectedDrinkId === drink.id ? 'Selected' : 'Select' }}
+              (click)="selectDrink(drink.name, drink.price)" 
+              [disabled]="selectedDrinkName !== null && selectedDrinkName !== drink.name">
+        {{ selectedDrinkName === drink.name ? 'Selected' : 'Select' }}
       </button>
       </td>
     </tr>
@@ -49,12 +49,12 @@
         <button type="button" 
               class="btn" 
               [ngClass]="{
-                  'btn-success': selectedMealId !== meal.id,
-                  'btn-secondary': selectedMealId === meal.id
+                  'btn-success': selectedMealName !== meal.name,
+                  'btn-secondary': selectedMealName === meal.name
               }" 
-              (click)="selectMeal(meal.id, meal.price)" 
-              [disabled]="selectedMealId !== null && selectedMealId !== meal.id">
-        {{ selectedMealId === meal.id ? 'Selected' : 'Select' }}
+              (click)="selectMeal(meal.name, meal.price)" 
+              [disabled]="selectedMealName !== null && selectedMealName !== meal.name">
+        {{ selectedMealName === meal.name ? 'Selected' : 'Select' }}
       </button>
       </td>
     </tr>
@@ -75,12 +75,12 @@
         <button type="button" 
               class="btn" 
               [ngClass]="{
-                  'btn-success': selectedDessertId !== dessert.id,
-                  'btn-secondary': selectedDessertId === dessert.id
+                  'btn-success': selectedDessertName !== dessert.name,
+                  'btn-secondary': selectedDessertName === dessert.name
               }" 
-              (click)="selectDessert(dessert.id, dessert.price)" 
-              [disabled]="selectedDessertId !== null && selectedDessertId !== dessert.id">
-        {{ selectedDessertId === dessert.id ? 'Selected' : 'Select' }}
+              (click)="selectDessert(dessert.name, dessert.price)" 
+              [disabled]="selectedDessertName !== null && selectedDessertName !== dessert.name">
+        {{ selectedDessertName === dessert.name ? 'Selected' : 'Select' }}
       </button>
       </td>
     </tr>

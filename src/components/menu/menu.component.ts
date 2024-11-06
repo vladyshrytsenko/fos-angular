@@ -10,6 +10,7 @@ import { Meal } from '../../model/meal';
 import { Cuisine } from '../../model/cuisine';
 import { Order } from '../../model/order';
 import { OrderService } from '../../service/order.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -21,15 +22,15 @@ import { OrderService } from '../../service/order.service';
 export class MenuComponent implements OnInit {
 
   public drinks!: Drink[];
-  public selectedDrinkId: number | null = null;
+  public selectedDrinkName: string | null = null;
   public isDrinkSelected: boolean = false;
 
   public desserts!: Dessert[];
-  public selectedDessertId: number | null = null;
+  public selectedDessertName: string | null = null;
   public isDessertSelected: boolean = false;
 
   public meals!: Meal[];
-  public selectedMealId: number | null = null;
+  public selectedMealName: string | null = null;
   public isMealSelected: boolean = false;
 
   public order: Order = {
@@ -40,16 +41,20 @@ export class MenuComponent implements OnInit {
     deletedAt: new Date(0),
     totalPrice: 0,
     dessertId: 0,
+    dessertName: '',
     mealId: 0,
+    mealName: '',
     drinkId: 0,
+    drinkName: '',
+    paymentId: '',
     iceCubes: false,
     lemon: false
   };
 
   public orderCustom = {
-    drinkId: null as number | null,
-    mealId: null as number | null,
-    dessertId: null as number | null,
+    drinkName: '',
+    mealName: '',
+    dessertName: '',
     totalPrice: 0
   };
 
@@ -58,7 +63,8 @@ export class MenuComponent implements OnInit {
     private drinkService: DrinkService,
     private dessertService: DessertService,
     private mealService: MealService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -67,56 +73,70 @@ export class MenuComponent implements OnInit {
     this.findAllMeals();
   }
 
-  public selectDrink(drinkId: number, price: number): void {
-    if (this.selectedDrinkId === drinkId) {
+  public selectDrink(drinkName: string, price: number): void {
+    if (this.selectedDrinkName === drinkName) {
       // Deselect the drink
-      this.selectedDrinkId = null;
-      this.orderCustom.drinkId = null;
+      this.selectedDrinkName = null;
+      this.orderCustom.drinkName = '';
       if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
         this.orderCustom.totalPrice -= price;
       }
     } else {
       // Select a new drink
-      this.selectedDrinkId = drinkId;
-      this.orderCustom.drinkId = drinkId;
+      this.selectedDrinkName = drinkName;
+      this.orderCustom.drinkName = drinkName;
       this.orderCustom.totalPrice += price;
     }
     console.log('Current custom Order:', this.orderCustom);
   }
 
-  public selectMeal(mealId: number, price: number): void {
-    if (this.selectedMealId === mealId) {
-      this.orderCustom.mealId = null;
-      this.selectedMealId = null;
+  public selectMeal(mealName: string, price: number): void {
+    if (this.selectedMealName === mealName) {
+      this.orderCustom.mealName = '';
+      this.selectedMealName = null;
       if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
         this.orderCustom.totalPrice -= price;
       }
     } else {
-      this.orderCustom.mealId = mealId;
-      this.selectedMealId = mealId;
+      this.orderCustom.mealName = mealName;
+      this.selectedMealName = mealName;
       this.orderCustom.totalPrice += price;
     }
     console.log('Current custom Order:', this.orderCustom);
   }
 
-  public selectDessert(dessertId: number, price: number): void {
-    if (this.selectedDessertId === dessertId) {
-      this.orderCustom.dessertId = null;
-      this.selectedDessertId = null;
+  public selectDessert(dessertName: string, price: number): void {
+    if (this.selectedDessertName === dessertName) {
+      this.orderCustom.dessertName = '';
+      this.selectedDessertName = null;
       if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
         this.orderCustom.totalPrice -= price;
       }
     } else {
-      this.orderCustom.dessertId = dessertId;
-      this.selectedDessertId = dessertId;
+      this.orderCustom.dessertName = dessertName;
+      this.selectedDessertName = dessertName;
       this.orderCustom.totalPrice += price;
     }
     console.log('Current custom Order:', this.orderCustom);
   }
 
   public submitOrder(): void {
-    console.log('Order submitted:', this.order);
-    
+    console.log('Order submitted:', this.orderCustom);
+    this.order.drinkName = this.orderCustom.drinkName;
+    this.order.mealName = this.orderCustom.mealName ?? null;
+    this.order.dessertName = this.orderCustom.dessertName ?? null;
+    this.order.totalPrice = this.orderCustom.totalPrice;
+
+    this.orderService.create(this.order).subscribe(
+      (createdOrder: Order) => {
+        console.log('Order created successfully:', createdOrder);
+        this.router.navigate([`/payment/${createdOrder.paymentId}`]);
+      },
+      (error) => {
+        console.error('Order creation failed:', error);
+        alert('Failed to create order. Please try again.');
+      }
+    );
   }
 
   public findAllDrinks(): void {

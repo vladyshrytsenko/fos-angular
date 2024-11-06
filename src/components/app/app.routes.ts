@@ -14,23 +14,23 @@ export const routes: Routes = [
       path: 'menu', 
       loadComponent: () => import('../menu/menu.component').then(m => m.MenuComponent)
     },
-    // { 
-    //   path: 'floors/:id', 
-    //   loadComponent: () => import('../floor/floor-detail/floor-detail.component').then(m => m.FloorDetailComponent) 
-    // },
+    { 
+      path: 'payment/:id', 
+      loadComponent: () => import('../payment/payment.component').then(m => m.PaymentComponent) 
+    },
     { 
       path: '', 
       redirectTo: 'menu', 
       pathMatch: 'full' 
-    },
+    }
     // { 
     //   path: '404', 
     //   component: NotFoundComponent 
     // },
-    { 
-      path: '**', 
-      redirectTo: "/404" 
-    } 
+    // { 
+    //   path: '**', 
+    //   redirectTo: "/404" 
+    // } 
 ];
 
 @NgModule({

@@ -9,9 +9,10 @@ export interface Order {
     dessertId: number;
     mealId: number;
     drinkId: number;
-    // dessertName: string;
-    // mealName: string;
-    // drinkName: string;
+    paymentId: string;
+    dessertName: string;
+    mealName: string;
+    drinkName: string;
     iceCubes: boolean;
     lemon: boolean;
 }
