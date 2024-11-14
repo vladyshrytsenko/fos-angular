@@ -1,13 +1,16 @@
 // payment.component.ts
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment'; // Add your Stripe key here
+import { CommonModule } from '@angular/common';
 
 declare const Stripe: any;
 
 @Component({
   selector: 'app-payment',
   templateUrl: './payment.component.html',
-  styleUrls: ['./payment.component.css']
+  styleUrls: ['./payment.component.css'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class PaymentComponent implements OnInit {
   stripe: any;
@@ -34,7 +37,7 @@ export class PaymentComponent implements OnInit {
 
   async fetchPaymentIntent() {
     // Call your backend to create and return a Payment Intent
-    const response = await fetch('/create-payment-intent', { method: 'POST' });
+    const response = await fetch('/menu', { method: 'GET' });
     return await response.json();
   }
 

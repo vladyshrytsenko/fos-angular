@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-// import { NotFoundComponent } from '../not-found/not-found.component';
-// import { AuthGuard } from '../login/auth-guard';
 import { HttpClientModule, withFetch } from '@angular/common/http';
+import { NotFoundComponent } from '../not-found/not-found.component';
+import { AuthGuard } from '../login/auth-guard';
 
 export const routes: Routes = [
-    // { 
-    //   path: 'login', 
-    //   loadComponent: () => import('../login/login.component').then(m => m.LoginComponent) 
-    // },
+    { 
+      path: 'login', 
+      loadComponent: () => import('../login/login.component').then(m => m.LoginComponent) 
+    },
     { 
       path: 'menu', 
-      loadComponent: () => import('../menu/menu.component').then(m => m.MenuComponent)
+      loadComponent: () => import('../menu/menu.component').then(m => m.MenuComponent),
+      canActivate: [AuthGuard]
     },
     { 
       path: 'payment/:id', 
@@ -22,15 +23,15 @@ export const routes: Routes = [
       path: '', 
       redirectTo: 'menu', 
       pathMatch: 'full' 
-    }
-    // { 
-    //   path: '404', 
-    //   component: NotFoundComponent 
-    // },
-    // { 
-    //   path: '**', 
-    //   redirectTo: "/404" 
-    // } 
+    },
+    { 
+      path: '404', 
+      component: NotFoundComponent 
+    },
+    { 
+      path: '**', 
+      redirectTo: "/404" 
+    } 
 ];
 
 @NgModule({
@@ -38,9 +39,9 @@ export const routes: Routes = [
     RouterModule.forRoot(routes),
     HttpClientModule
   ],
-//   providers: [
-//     AuthGuard
-//   ],
+  providers: [
+    AuthGuard
+  ],
   exports: [
     RouterModule
   ]
