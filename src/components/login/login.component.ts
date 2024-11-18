@@ -1,11 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, NgForm, FormsModule } from '@angular/forms';
-// import { Role, User } from '../../model/user';
-// import { UserService } from '../../service/user.service';
 import { Router } from '@angular/router';
-// import { StorageService } from '../../service/storage.service';
 import { HttpErrorResponse } from '@angular/common/http';
-// import bootstrap from '../../main.server';
 import { User } from '../../model/user';
 import { UserService } from '../../service/user.service';
 import { StorageService } from '../../service/storage.service';
@@ -47,7 +43,7 @@ export class LoginComponent implements OnInit {
         this.storageService.setItem('jwtToken', data.token);
         
         console.log('User signed in successfully. token: ', data.token);
-        this.router.navigate(['/floors']);
+        this.router.navigate(['/menu']);
       },
       error => {
         console.log('Login failed!', error.message);

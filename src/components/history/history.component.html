@@ -1,0 +1,36 @@
+<div class="container mt-4">
+    <h2 class="mb-4">Order History</h2>
+      <div class="card mb-3" *ngFor="let order of orders">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>Order #{{ order.id }}</span>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            <strong>Meal:</strong> {{ order.meal?.name }} ({{ order.meal?.price }}$)
+          </p>
+          <p class="card-text">
+            <strong>Dessert:</strong> {{ order.dessert?.name }} ({{ order.dessert?.price }}$)
+          </p>
+          <p class="card-text">
+            <strong>Drink:</strong> {{ order.drink?.name }} ({{ order.drink?.price }}$)
+            <span *ngIf="order.iceCubes" class="badge bg-primary ms-2">With Ice</span>
+            <span *ngIf="order.lemon" class="badge bg-warning text-dark ms-2">With Lemon</span>
+          </p>
+          <hr>
+          <p class="card-text">
+            <strong>Total Price:</strong> ${{getTotalPrice(order)}}
+          </p>
+          <p class="card-text">
+            <small class="text-muted">Created At: {{ order.createdAt }}</small>
+          </p>
+          <label for="subscription">Subscription:</label>
+            <select id="subscription" ngModel name="selectedSubscription" (change)="onSubscriptionChange()">
+                <option *ngFor="let option of subscriptionOptions" [value]="option">{{ option }}</option>
+            </select>
+        </div>
+      </div>
+    <ng-template #noOrders>
+      <p class="text-center">History is empty.</p>
+    </ng-template>
+  </div>
+  
