@@ -3,6 +3,9 @@
       <div class="card mb-3" *ngFor="let order of orders">
         <div class="card-header d-flex justify-content-between align-items-center">
           <span>Order #{{ order.id }}</span>
+          <p class="card-text">
+            <small class="text-muted">Created At: {{ order.createdAt }}</small>
+          </p>
         </div>
         <div class="card-body">
           <p class="card-text">
@@ -20,13 +23,11 @@
           <p class="card-text">
             <strong>Total Price:</strong> ${{getTotalPrice(order)}}
           </p>
-          <p class="card-text">
-            <small class="text-muted">Created At: {{ order.createdAt }}</small>
-          </p>
           <label for="subscription">Subscription:</label>
-            <select id="subscription" ngModel name="selectedSubscription" (change)="onSubscriptionChange()">
-                <option *ngFor="let option of subscriptionOptions" [value]="option">{{ option }}</option>
-            </select>
+          <select id="subscription" #subscriptionSelect ngModel name="selectedSubscription" 
+            (change)="onSubscriptionChange(order.id, subscriptionSelect.value)">
+            <option *ngFor="let option of subscriptionOptions" [value]="option"> {{ option }} </option>
+          </select>
         </div>
       </div>
     <ng-template #noOrders>

@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { loadStripe } from '@stripe/stripe-js';
-
-declare const Stripe: any;
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-payment',
@@ -12,86 +11,114 @@ declare const Stripe: any;
   standalone: true,
   imports: [CommonModule]
 })
-export class PaymentComponent {
+export class PaymentComponent implements OnInit {
   stripe: any;
   elements: any;
   paymentElement: any;
   loading = false;
   message: string | null = null;
-  uuid = 'your-payment-uuid';
-  private isPaymentInitialized = false;
+  totalPrice: number = 0;
+  
+  constructor(private activatedRoute: ActivatedRoute) {}
 
-  async initializeStripe() {
-    if (!this.stripe) {
-      this.stripe = await loadStripe(environment.stripePublishableKey);
-      if (!this.stripe) {
+  ngOnInit(): void {
+    this.loadStripeAndInitialize();
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.totalPrice = Number(params['totalPrice']);
+      console.log('paymentComponent() Total Price:', this.totalPrice);
+    });
+  }
+
+  async loadStripeAndInitialize() {
+    try {
+      const stripe = await this.loadStripe(environment.stripePublishableKey);
+      if (!stripe) {
         console.error('Failed to load Stripe.js');
         return;
       }
-      console.log('Stripe.js successfully loaded');
-    }
-  }
-
-  // ngOnInit(): void {
-  //     loadStripe(environment.stripePublishableKey).then((stripe) => {
-  //       if (!stripe) {
-  //         console.log('Failed to load Stripe.js');
-  //         return;
-  //       } else {
-  //         console.log('Stripe.js successfully loaded');
-  //       }
-  //       this.stripe = stripe;
-  //       if (!this.paymentElement) {
-  //         this.initializePaymentElement();
-  //       }
-  //     });
-  // }
-
-  async initializePaymentElement() {
-    await this.initializeStripe();
-
-    if (!this.paymentElement) {
-      try {
-        const { clientSecret } = await this.fetchPaymentIntent();
-        console.log('Payment Intent Client Secret:', clientSecret);
-
-        const appearance = { theme: 'stripe' };
-        this.elements = this.stripe.elements({ clientSecret, appearance });
-
+      this.stripe = stripe;
+  
+      const { clientSecret } = await this.fetchPaymentIntent();
+      const appearance = { theme: 'stripe' };
+      this.elements = this.stripe.elements({ clientSecret, appearance });
+  
+      if (!this.paymentElement) {
         this.paymentElement = this.elements.create('payment');
         this.paymentElement.mount('#payment-element');
         console.log('Payment Element successfully mounted');
-      } catch (error) {
-        console.error('Error initializing Payment Element:', error);
       }
+    } catch (error) {
+      console.error('Error initializing Stripe:', error);
     }
   }
+  
+
+  async loadStripe(publishableKey: string): Promise<any> {
+    return new Promise((resolve) => {
+      if (window['Stripe']) {
+        resolve(window['Stripe'](publishableKey));
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://js.stripe.com/v3/';
+        script.async = true;
+  
+        script.onload = () => {
+          const stripe = window['Stripe'] as any;
+          if (stripe) {
+            resolve(stripe(publishableKey));
+          } else {
+            console.error('Stripe.js was loaded, but Stripe is not available.');
+            resolve(null);
+          }
+        };
+  
+        script.onerror = () => {
+          console.error('Failed to load Stripe.js');
+          resolve(null);
+        };
+  
+        document.body.appendChild(script);
+      }
+    });
+  }
+  
 
   async fetchPaymentIntent() {
     const response = await fetch('http://localhost:8080/api/payments/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: 5000, currency: 'usd' })
+      body: JSON.stringify({ amount: this.totalPrice, currency: 'usd' })
     });
     const data = await response.json();
     return data;
   }
 
-  async submitPayment() {
+  async submitPayment(event: Event) {
+    event.preventDefault();
+  
+    console.log('Entry point submitPayment()');
     this.loading = true;
-
-    const { error } = await this.stripe.confirmPayment({
-      elements: this.elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/payment-success`,
-      },
-    });
-
-    if (error) {
-      this.message = error.message;
-    } else {
-      this.message = 'Payment succeeded!';
+  
+    try {
+      const { error } = await this.stripe.confirmPayment({
+        elements: this.elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/payment-success`,
+        },
+      });
+  
+      if (error) {
+        console.error('Payment failed:', error.message);
+        this.message = error.message;
+      } else {
+        this.message = 'Payment succeeded!';
+      }
+    } catch (err) {
+      console.error('Error during payment submission:', err);
+    } finally {
+      this.loading = false;
     }
-    this.loading = false;
   }
+  
 }

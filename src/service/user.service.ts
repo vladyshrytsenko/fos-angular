@@ -48,9 +48,7 @@ export class UserService {
 
   public deleteUserById(id: number) : Observable<void> {
     return this.http.delete<void>(`${this.apiServerUrl}/api/users/${id}`);
-  } 
-
-
+  }
 
   public isAdmin(): Observable<boolean> {
     return new Observable<boolean>((observer) => {
@@ -86,28 +84,7 @@ export class UserService {
   }
 
   public getCurrentUser(): Observable<User> {
-    return new Observable<User>((observer) => {
-      const token = this.storageService.getJwtToken();
-  
-      if (token != null) {
-        const payload = this.decodeToken(token);
-        if (payload && payload.sub) {
-          this.getByUsername(payload.sub).subscribe(
-            (response: User) => {
-              observer.next(response);
-              observer.complete();
-            },
-            (error) => {
-              observer.error(error);
-            }
-          );
-        } else {
-          observer.error('Invalid token payload');
-        }
-      } else {
-        observer.error('No token found');
-      }
-    });
+    return this.http.get<User>(`${this.apiServerUrl}/api/users/current-user`);
   }  
 
   public decodeToken(token: string): any {

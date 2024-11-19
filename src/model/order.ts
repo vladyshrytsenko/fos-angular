@@ -1,6 +1,7 @@
 import { Dessert } from "./dessert";
 import { Drink } from "./drink";
 import { Meal } from "./meal";
+import { Payment } from "./payment";
 
 export interface Order {
     id: number;
@@ -16,6 +17,7 @@ export interface Order {
     drinkId: number;
     drink?: Drink;
     paymentId: string;
+    payment?: Payment;
     dessertName: string;
     mealName: string;
     drinkName: string;

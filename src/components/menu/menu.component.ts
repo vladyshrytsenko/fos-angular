@@ -123,14 +123,18 @@ export class MenuComponent implements OnInit {
   public submitOrder(): void {
     console.log('Order submitted:', this.orderCustom);
     this.order.drinkName = this.orderCustom.drinkName;
+    this.order.iceCubes = true;
+    this.order.lemon = true;
     this.order.mealName = this.orderCustom.mealName ?? null;
     this.order.dessertName = this.orderCustom.dessertName ?? null;
-    this.order.totalPrice = this.orderCustom.totalPrice;
+    this.order.totalPrice = parseFloat(this.orderCustom.totalPrice.toFixed(2)) * 100; // in cents
 
     this.orderService.create(this.order).subscribe(
       (createdOrder: Order) => {
         console.log('Order created successfully:', createdOrder);
-        this.router.navigate([`/payment/${createdOrder.paymentId}`]);
+        this.router.navigate([`/payment/${createdOrder.payment?.id}`], {
+          queryParams: { totalPrice: this.order.totalPrice }
+        });
       },
       (error) => {
         console.error('Order creation failed:', error);

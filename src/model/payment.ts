@@ -1,6 +1,4 @@
-import { Order } from "./order";
-
-export interface Cuisine {
+export interface Payment {
     id: string;
     orderId: number;
     totalPrice: number;
