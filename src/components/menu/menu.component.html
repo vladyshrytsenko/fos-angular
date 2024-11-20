@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu</title>
-</head>
-<body>
-
 <div class="menu">
   <h2>Menu</h2>
 
   <h3>Drinks</h3>
+  <button *ngIf="admin" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDrinkModal">
+    Create
+  </button>
   <table>
     <tr>
       <th class="name-column">Name</th>
@@ -35,6 +29,9 @@
   </table>
 
   <h3>Lunch</h3>
+  <button *ngIf="admin" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLunchModal">
+    Create
+  </button>
   <table>
     <tr>
       <th class="name-column">Name</th>
@@ -61,6 +58,9 @@
   </table>
 
   <h3>Desserts</h3>
+  <button *ngIf="admin" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDessertModal">
+    Create
+  </button>
   <table>
     <tr>
       <th class="name-column">Name</th>
@@ -93,5 +93,92 @@
 
 </div>
 
-</body>
-</html>
+<!-- Modals -->
+<!-- Create Drink Modal -->
+<div class="modal fade" id="createDrinkModal" tabindex="-1" role="dialog" aria-labelledby="createDrinkModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create a new drink</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onCreateDrink(createDrinkForm)" #createDrinkForm="ngForm">
+          <div class="mb-3">
+            <label for="drink-name" class="form-label">Drink Name:</label>
+            <input type="text" class="form-control" id="drink-name" name="name" ngModel required>
+          </div>
+          <div class="mb-3">
+            <label for="drink-price" class="form-label">Price (USD):</label>
+            <input type="number" class="form-control" id="drink-price" name="price" ngModel required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" [disabled]="createDrinkForm.invalid">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Meal Modal -->
+<div class="modal fade" id="createMealModal" tabindex="-1" role="dialog" aria-labelledby="createMealModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create a new meal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onCreateMeal(createMealForm)" #createMealForm="ngForm">
+          <div class="mb-3">
+            <label for="meal-name" class="form-label">Meal Name:</label>
+            <input type="text" class="form-control" id="meal-name" name="name" ngModel required>
+          </div>
+          <div class="mb-3">
+            <label for="meal-price" class="form-label">Price (USD):</label>
+            <input type="number" class="form-control" id="meal-price" name="price" ngModel required>
+          </div>
+          <div class="mb-3">
+            <label for="meal-cuisine" class="form-label">Cuisine:</label>
+            <input type="text" class="form-control" id="meal-cuisine" name="cuisineName" ngModel required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" [disabled]="createMealForm.invalid">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Dessert Modal -->
+<div class="modal fade" id="createDessertModal" tabindex="-1" role="dialog" aria-labelledby="createDessertModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create a new dessert</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onCreateDessert(createDessertForm)" #createDessertForm="ngForm">
+          <div class="mb-3">
+            <label for="dessert-name" class="form-label">Dessert Name:</label>
+            <input type="text" class="form-control" id="dessert-name" name="name" ngModel required>
+          </div>
+          <div class="mb-3">
+            <label for="dessert-price" class="form-label">Price (USD):</label>
+            <input type="number" class="form-control" id="dessert-price" name="price" ngModel required>
+          </div>
+          <div class="mb-3">
+            <label for="dessert-cuisine" class="form-label">Cuisine:</label>
+            <input type="text" class="form-control" id="dessert-cuisine" name="cuisineName" ngModel required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" [disabled]="createDessertForm.invalid">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

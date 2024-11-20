@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { StorageService } from './storage.service';
@@ -84,8 +84,13 @@ export class UserService {
   }
 
   public getCurrentUser(): Observable<User> {
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/current-user`);
-  }  
+    const token = this.storageService.getJwtToken();
+    return this.http.get<User>(`${this.apiServerUrl}/api/users/current-user`, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+  }
 
   public decodeToken(token: string): any {
     try {

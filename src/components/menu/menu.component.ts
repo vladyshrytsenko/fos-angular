@@ -11,15 +11,20 @@ import { Cuisine } from '../../model/cuisine';
 import { Order } from '../../model/order';
 import { OrderService } from '../../service/order.service';
 import { Router } from '@angular/router';
+import { FormsModule, NgForm } from '@angular/forms';
+import { UserService } from '../../service/user.service';
+import { User } from '../../model/user';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css'
 })
 export class MenuComponent implements OnInit {
+
+  public admin!: boolean;
 
   public drinks!: Drink[];
   public selectedDrinkName: string | null = null;
@@ -64,6 +69,7 @@ export class MenuComponent implements OnInit {
     private dessertService: DessertService,
     private mealService: MealService,
     private orderService: OrderService,
+    private userService: UserService,
     private router: Router
   ) {}
 
@@ -71,6 +77,16 @@ export class MenuComponent implements OnInit {
     this.findAllDrinks();
     this.findAllDesserts();
     this.findAllMeals();
+
+    this.userService.isAdmin().subscribe(
+      (isAdmin: boolean) => {
+        this.admin = isAdmin;
+      },
+      error => {
+        console.error('Error checking admin status:', error);
+        this.admin = false;
+      }
+    );
   }
 
   public selectDrink(drinkName: string, price: number): void {
@@ -199,5 +215,68 @@ export class MenuComponent implements OnInit {
       } 
     );
   }
+
+  public onCreateMeal(createMealForm: NgForm): void {
+    if (createMealForm.invalid) {
+      alert('Please fill out the form correctly.');
+      return;
+    }
+  
+    const meal = createMealForm.value;
+  
+    console.log('Meal data:', meal);
+    this.mealService.create(meal).subscribe(
+      (response) => {
+        console.log('Meal created successfully:', response);
+        createMealForm.reset();
+      },
+      (error) => {
+        console.error('Error creating meal:', error);
+        alert('Failed to create meal. Please try again.');
+      }
+    );
+  }
+
+  public onCreateDrink(createDrinkForm: NgForm): void {
+    if (createDrinkForm.invalid) {
+      alert('Please fill out the form correctly.');
+      return;
+    }
+  
+    const drink = createDrinkForm.value;
+  
+    console.log('Drink data:', drink);
+    this.drinkService.create(drink).subscribe(
+      (response) => {
+        console.log('Drink created successfully:', response);
+        createDrinkForm.reset();
+      },
+      (error) => {
+        console.error('Error creating drink:', error);
+        alert('Failed to create drink. Please try again.');
+      }
+    );
+  }
+
+  public onCreateDessert(createDessertForm: NgForm): void {
+    if (createDessertForm.invalid) {
+      alert('Please fill out the form correctly.');
+      return;
+    }
+  
+    const dessert = createDessertForm.value;
+  
+    console.log('Dessert data:', dessert);
+    this.dessertService.create(dessert).subscribe(
+      (response) => {
+        console.log('Dessert created successfully:', response);
+        createDessertForm.reset();
+      },
+      (error) => {
+        console.error('Error creating dessert:', error);
+        alert('Failed to create dessert. Please try again.');
+      }
+    );
+  }  
 
 }
