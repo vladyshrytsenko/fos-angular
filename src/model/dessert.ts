@@ -9,6 +9,4 @@ export interface Dessert {
     price: number;
     portionWeight: number;
     number: number;
-    cuisineId: number;
-    cuisineName: string;
 }

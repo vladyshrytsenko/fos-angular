@@ -2,8 +2,8 @@
   <h2>Menu</h2>
 
   <h3>Drinks</h3>
-  <button *ngIf="admin" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDrinkModal">
-    Create
+  <button *ngIf="admin" (click)="showCreateDrinkModal()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDrinkModal">
+    Add
   </button>
   <table>
     <tr>
@@ -28,9 +28,12 @@
     </tr>
   </table>
 
-  <h3>Lunch</h3>
-  <button *ngIf="admin" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLunchModal">
-    Create
+  <h3>Meals</h3>
+  <button *ngIf="admin" (click)="showCreateMealModal()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMealModal">
+    Add
+  </button>
+  <button *ngIf="admin" (click)="showCreateCuisineModal()" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#createCuisineModal">
+    Create cuisine
   </button>
   <table>
     <tr>
@@ -58,19 +61,17 @@
   </table>
 
   <h3>Desserts</h3>
-  <button *ngIf="admin" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDessertModal">
-    Create
+  <button *ngIf="admin" (click)="showCreateDessertModal()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDessertModal">
+    Add
   </button>
   <table>
     <tr>
       <th class="name-column">Name</th>
       <th class="price-column">Price</th>
-      <th class="cuisine-column">Cuisine</th>
     </tr>
     <tr *ngFor="let dessert of desserts">
       <td>{{ dessert.name }}</td>
       <td>{{ dessert.price }} usd</td>
-      <td>{{ dessert.cuisineName }}</td>
       <td>
         <button type="button" 
               class="btn" 
@@ -104,14 +105,53 @@
       </div>
       <div class="modal-body">
         <form (ngSubmit)="onCreateDrink(createDrinkForm)" #createDrinkForm="ngForm">
+          <!-- Drink Name Field -->
           <div class="mb-3">
             <label for="drink-name" class="form-label">Drink Name:</label>
-            <input type="text" class="form-control" id="drink-name" name="name" ngModel required>
+            <input
+              type="text"
+              class="form-control"
+              id="drink-name"
+              name="name"
+              ngModel
+              required
+              minlength="4"
+            />
+            <!-- Error Messages for Drink Name -->
+            <div *ngIf="createDrinkForm.submitted || createDrinkForm.controls['name']?.touched">
+              <small class="text-danger" *ngIf="createDrinkForm.controls['name']?.errors?.['required']">
+                Drink Name is required.
+              </small>
+              <small class="text-danger" *ngIf="createDrinkForm.controls['name']?.errors?.['minlength']">
+                Drink Name must be at least 4 characters long.
+              </small>
+            </div>
           </div>
+
+          <!-- Drink Price Field -->
           <div class="mb-3">
             <label for="drink-price" class="form-label">Price (USD):</label>
-            <input type="number" class="form-control" id="drink-price" name="price" ngModel required>
+            <input
+              type="number"
+              class="form-control"
+              id="drink-price"
+              name="price"
+              ngModel
+              required
+              min="0.1"
+            />
+            <!-- Error Messages for Drink Price -->
+            <div *ngIf="createDrinkForm.submitted || createDrinkForm.controls['price']?.touched">
+              <small class="text-danger" *ngIf="createDrinkForm.controls['price']?.errors?.['required']">
+                Price is required.
+              </small>
+              <small class="text-danger" *ngIf="createDrinkForm.controls['price']?.errors?.['min']">
+                Price must be greater than 0.
+              </small>
+            </div>
           </div>
+
+          <!-- Submit Button -->
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" [disabled]="createDrinkForm.invalid">Save</button>
           </div>
@@ -131,20 +171,143 @@
       </div>
       <div class="modal-body">
         <form (ngSubmit)="onCreateMeal(createMealForm)" #createMealForm="ngForm">
+          <!-- Meal Name -->
           <div class="mb-3">
             <label for="meal-name" class="form-label">Meal Name:</label>
-            <input type="text" class="form-control" id="meal-name" name="name" ngModel required>
+            <input
+              type="text"
+              class="form-control"
+              id="meal-name"
+              name="name"
+              ngModel
+              required
+              minlength="4"
+            />
+            <div *ngIf="createMealForm.submitted || createMealForm.controls['name']?.touched">
+              <small class="text-danger" *ngIf="createMealForm.controls['name']?.errors?.['required']">
+                Meal Name is required.
+              </small>
+              <small class="text-danger" *ngIf="createMealForm.controls['name']?.errors?.['minlength']">
+                Meal Name must be at least 4 characters long.
+              </small>
+            </div>
           </div>
+
+          <!-- Meal Price -->
           <div class="mb-3">
             <label for="meal-price" class="form-label">Price (USD):</label>
-            <input type="number" class="form-control" id="meal-price" name="price" ngModel required>
+            <input
+              type="number"
+              class="form-control"
+              id="meal-price"
+              name="price"
+              ngModel
+              required
+              min="0.1"
+            />
+            <div *ngIf="createMealForm.submitted || createMealForm.controls['price']?.touched">
+              <small class="text-danger" *ngIf="createMealForm.controls['price']?.errors?.['required']">
+                Price is required.
+              </small>
+              <small class="text-danger" *ngIf="createMealForm.controls['price']?.errors?.['min']">
+                Price must be greater than 0.
+              </small>
+            </div>
           </div>
+
+          <!-- Portion Weight -->
+          <div class="mb-3">
+            <label for="meal-portion-weight" class="form-label">Portion weight (g):</label>
+            <input
+              type="number"
+              class="form-control"
+              id="meal-portion-weight"
+              name="portionWeight"
+              ngModel
+              required
+              min="10"
+            />
+            <div *ngIf="createMealForm.submitted || createMealForm.controls['portionWeight']?.touched">
+              <small class="text-danger" *ngIf="createMealForm.controls['portionWeight']?.errors?.['required']">
+                Portion weight is required.
+              </small>
+              <small class="text-danger" *ngIf="createMealForm.controls['portionWeight']?.errors?.['min']">
+                Portion weight must be at least 10 gram.
+              </small>
+            </div>
+          </div>
+
+          <!-- Cuisine -->
           <div class="mb-3">
             <label for="meal-cuisine" class="form-label">Cuisine:</label>
-            <input type="text" class="form-control" id="meal-cuisine" name="cuisineName" ngModel required>
+            <select
+              class="form-control"
+              id="meal-cuisine"
+              name="cuisineName"
+              [(ngModel)]="selectedCuisine"
+              required
+            >
+              <option value="" disabled>Select a cuisine</option>
+              <option *ngFor="let cuisine of cuisines" [value]="cuisine.name">
+                {{ cuisine.name }}
+              </option>
+            </select>
+            <div *ngIf="createMealForm.submitted || createMealForm.controls['cuisineName']?.touched">
+              <small class="text-danger" *ngIf="createMealForm.controls['cuisineName']?.errors?.['required']">
+                Cuisine is required.
+              </small>
+            </div>
           </div>
+
+          <!-- Submit Button -->
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" [disabled]="createMealForm.invalid">Save</button>
+            <button type="submit" class="btn btn-primary" [disabled]="createMealForm.invalid">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Cuisine Modal -->
+<div class="modal fade" id="createCuisineModal" tabindex="-1" role="dialog" aria-labelledby="createCuisineModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create a new cuisine</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onCreateCuisine(createCuisineForm)" #createCuisineForm="ngForm">
+          <!-- Cuisine Name -->
+          <div class="mb-3">
+            <label for="cuisine-name" class="form-label">Cuisine Name:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="cuisine-name"
+              name="name"
+              ngModel
+              required
+              minlength="4"
+            />
+            <div *ngIf="createCuisineForm.submitted || createCuisineForm.controls['name']?.touched">
+              <small class="text-danger" *ngIf="createCuisineForm.controls['name']?.errors?.['required']">
+                Cuisine Name is required.
+              </small>
+              <small class="text-danger" *ngIf="createCuisineForm.controls['name']?.errors?.['minlength']">
+                Cuisine Name must be at least 4 characters long.
+              </small>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" [disabled]="createCuisineForm.invalid">
+              Save
+            </button>
           </div>
         </form>
       </div>
@@ -162,18 +325,73 @@
       </div>
       <div class="modal-body">
         <form (ngSubmit)="onCreateDessert(createDessertForm)" #createDessertForm="ngForm">
+          <!-- Dessert Name -->
           <div class="mb-3">
             <label for="dessert-name" class="form-label">Dessert Name:</label>
-            <input type="text" class="form-control" id="dessert-name" name="name" ngModel required>
+            <input
+              type="text"
+              class="form-control"
+              id="dessert-name"
+              name="name"
+              ngModel
+              required
+              minlength="4"
+            />
+            <div *ngIf="createDessertForm.submitted || createDessertForm.controls['name']?.touched">
+              <small class="text-danger" *ngIf="createDessertForm.controls['name']?.errors?.['required']">
+                Dessert Name is required.
+              </small>
+              <small class="text-danger" *ngIf="createDessertForm.controls['name']?.errors?.['minlength']">
+                Dessert Name must be at least 4 characters long.
+              </small>
+            </div>
           </div>
+
+          <!-- Dessert Price -->
           <div class="mb-3">
             <label for="dessert-price" class="form-label">Price (USD):</label>
-            <input type="number" class="form-control" id="dessert-price" name="price" ngModel required>
+            <input
+              type="number"
+              class="form-control"
+              id="dessert-price"
+              name="price"
+              ngModel
+              required
+              min="0.1"
+            />
+            <div *ngIf="createDessertForm.submitted || createDessertForm.controls['price']?.touched">
+              <small class="text-danger" *ngIf="createDessertForm.controls['price']?.errors?.['required']">
+                Price is required.
+              </small>
+              <small class="text-danger" *ngIf="createDessertForm.controls['price']?.errors?.['min']">
+                Price must be greater than 0.
+              </small>
+            </div>
           </div>
+
+          <!-- Dessert Portion Weight -->
           <div class="mb-3">
-            <label for="dessert-cuisine" class="form-label">Cuisine:</label>
-            <input type="text" class="form-control" id="dessert-cuisine" name="cuisineName" ngModel required>
+            <label for="dessert-portion-weight" class="form-label">Portion weight (g):</label>
+            <input
+              type="number"
+              class="form-control"
+              id="dessert-portion-weight"
+              name="portionWeight"
+              ngModel
+              required
+              min="10"
+            />
+            <div *ngIf="createDessertForm.submitted || createDessertForm.controls['portionWeight']?.touched">
+              <small class="text-danger" *ngIf="createDessertForm.controls['portionWeight']?.errors?.['required']">
+                Portion weight is required.
+              </small>
+              <small class="text-danger" *ngIf="createDessertForm.controls['portionWeight']?.errors?.['min']">
+                Portion weight must be at least 10 grams.
+              </small>
+            </div>
           </div>
+
+          <!-- Submit Button -->
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" [disabled]="createDessertForm.invalid">Save</button>
           </div>

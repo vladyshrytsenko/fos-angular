@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Renderer2, OnInit } from '@angular/core';
 import { DrinkService } from '../../service/drink.service';
 import { CuisineService } from '../../service/cuisine.service';
 import { DessertService } from '../../service/dessert.service';
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../service/user.service';
 import { User } from '../../model/user';
+import { Modal } from 'bootstrap';
 
 @Component({
   selector: 'app-menu',
@@ -37,6 +38,9 @@ export class MenuComponent implements OnInit {
   public meals!: Meal[];
   public selectedMealName: string | null = null;
   public isMealSelected: boolean = false;
+
+  cuisines: Cuisine[] = [];
+  selectedCuisine!: Cuisine;
 
   public order: Order = {
     id: 0,
@@ -70,13 +74,24 @@ export class MenuComponent implements OnInit {
     private mealService: MealService,
     private orderService: OrderService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private el: ElementRef, 
+    private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
     this.findAllDrinks();
     this.findAllDesserts();
     this.findAllMeals();
+
+    this.cuisineService.findAll().subscribe(
+      (response: Cuisine[]) => {
+        this.cuisines = response;
+      },
+      (error) => {
+        console.error('Error loading cuisines:', error);
+      }
+    );
 
     this.userService.isAdmin().subscribe(
       (isAdmin: boolean) => {
@@ -87,6 +102,30 @@ export class MenuComponent implements OnInit {
         this.admin = false;
       }
     );
+  }
+
+  showCreateDrinkModal(): void {
+    const modalElement = this.el.nativeElement.querySelector('#createDrinkModal');
+    const modal = new Modal(modalElement);
+    modal.show();
+  }
+
+  showCreateMealModal(): void {
+    const modalElement = this.el.nativeElement.querySelector('#createMealModal');
+    const modal = new Modal(modalElement);
+    modal.show();
+  }
+
+  showCreateCuisineModal(): void {
+    const modalElement = this.el.nativeElement.querySelector('#createCuisineModal');
+    const modal = new Modal(modalElement);
+    modal.show();
+  }
+
+  showCreateDessertModal(): void {
+    const modalElement = this.el.nativeElement.querySelector('#createDessertModal');
+    const modal = new Modal(modalElement);
+    modal.show();
   }
 
   public selectDrink(drinkName: string, price: number): void {
@@ -175,15 +214,6 @@ export class MenuComponent implements OnInit {
     this.dessertService.findAll().subscribe( 
       (response: Dessert[]) => {
         this.desserts = response.map(dessert => {
-          this.cuisineService.getById(dessert.cuisineId).subscribe(
-            (cuisine: Cuisine) => {
-              dessert.cuisineName = cuisine.name;
-            },
-            (error) => {
-              console.error("Error fetching cuisine:", error);
-              dessert.cuisineName = "Unknown";
-            }
-          );
           return dessert;
         });
         console.log('desserts: ', response);
@@ -229,10 +259,33 @@ export class MenuComponent implements OnInit {
       (response) => {
         console.log('Meal created successfully:', response);
         createMealForm.reset();
+        location.reload();
       },
       (error) => {
         console.error('Error creating meal:', error);
         alert('Failed to create meal. Please try again.');
+      }
+    );
+  }
+
+  public onCreateCuisine(createCuisineForm: NgForm): void {
+    if (createCuisineForm.invalid) {
+      alert('Please fill out the form correctly.');
+      return;
+    }
+  
+    const cuisine = createCuisineForm.value;
+  
+    console.log('Cuisine data:', cuisine);
+    this.cuisineService.create(cuisine).subscribe(
+      (response) => {
+        console.log('Cuisine created successfully:', response);
+        createCuisineForm.reset();
+        location.reload();
+      },
+      (error) => {
+        console.error('Error creating cuisine:', error);
+        alert('Failed to create cuisine. Please try again.');
       }
     );
   }
@@ -250,6 +303,7 @@ export class MenuComponent implements OnInit {
       (response) => {
         console.log('Drink created successfully:', response);
         createDrinkForm.reset();
+        location.reload();
       },
       (error) => {
         console.error('Error creating drink:', error);
@@ -271,6 +325,7 @@ export class MenuComponent implements OnInit {
       (response) => {
         console.log('Dessert created successfully:', response);
         createDessertForm.reset();
+        location.reload();
       },
       (error) => {
         console.error('Error creating dessert:', error);

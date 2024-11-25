@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
 
   @ViewChild('registrationModal') registrationModal!: ElementRef;
   registerForm!: FormGroup;
+  confirmPassword: string = '';
 
   user!: User;
 
@@ -63,19 +64,19 @@ export class LoginComponent implements OnInit {
   public onRegister(registerForm: NgForm) : void {
     console.log('entry point onRegister')
 
-    this.userService.register(registerForm.value).subscribe(
-      response => {
-        console.log('User registered successfully', response);
-        // token saving
-        // this.storageService.setItem('jwtToken', response.token)
-        this.router.navigate(['/login']);
-
-        // $('#myModal').modal('hide')
-
-      },
-      (error: HttpErrorResponse) => {
-        alert(error.message)
-      }
-    )
+    if (registerForm.valid && this.confirmPassword === registerForm.value.password) {
+      this.userService.register(registerForm.value).subscribe(
+        response => {
+          console.log('User registered successfully', response);
+          // token saving
+          this.router.navigate(['/login']);  
+        },
+        (error: HttpErrorResponse) => {
+          alert(error.message)
+        }
+      )
+    } else {
+      alert('Passwords do not match');
+    }
   }
 }
