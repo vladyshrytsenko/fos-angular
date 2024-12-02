@@ -26,30 +26,32 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.isAdmin().subscribe(
-      (isAdmin: boolean) => {
-        this.admin = isAdmin;
-      },
-      error => {
-        console.error('Error checking admin status:', error);
-        this.admin = false;
-      }
-    );
-    this.userService.getCurrentUser().subscribe(
-      (response: User) => {
-        this.user = response;
-      },
-      error => {
-        console.error('Error getting current user:', error);
-        this.admin = false;
-      }
-    );
+    // this.userService.isAdmin().subscribe(
+    //   (isAdmin: boolean) => {
+    //     this.admin = isAdmin;
+    //   },
+    //   error => {
+    //     console.error('Error checking admin status:', error);
+    //     this.admin = false;
+    //   }
+    // );
+    // this.userService.getCurrentUser().subscribe(
+    //   (response: User) => {
+    //     this.user = response;
+    //   },
+    //   error => {
+    //     console.error('Error getting current user:', error);
+    //     this.admin = false;
+    //   }
+    // );
   }
 
   public onLogout() : void {
     console.log('entry point onLogout')
 
     this.storageService.removeJwtToken();
+    // this.oauthService.logOut();
+
     this.router.navigate(['/login']);
 
     console.log('Successfully logged out')

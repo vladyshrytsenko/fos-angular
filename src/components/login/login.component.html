@@ -32,10 +32,20 @@
                   </div>
 
                   <div class="pt-1 mb-4">
-                    <button [disabled]="loginForm.invalid" id="login_button" type="submit" class="btn btn-success">Sing in</button>
+                    <button [disabled]="loginForm.invalid" id="login_button" type="submit" class="btn btn-success">Sign in</button>
                   </div>
 
                 </form>
+
+                <div class="text-center">or</div>
+
+                <!-- Google Login Button -->
+                <div id="g_id_onload"
+                  data-client_id="653875561290-jtd5p8sda5ulj7ul6s2dofkmq7k1neht.apps.googleusercontent.com"
+                  data-callback="handleCredentialResponse"
+                  data-auto_prompt="true">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-size="large"></div>
 
                 <a class="small text-muted" href="#!">Forgot password?</a>
                   <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? 
@@ -143,7 +153,7 @@
 
           <!-- Submit Button -->
           <div class="modal-footer">
-            <button [disabled]="registerForm.invalid || confirmPassword !== registerForm.controls['password']?.value" id="register_button" type="submit" class="btn btn-primary">
+            <button [disabled]="registerForm.invalid" id="register_button" type="submit" class="btn btn-primary">
               Register
             </button>
           </div>

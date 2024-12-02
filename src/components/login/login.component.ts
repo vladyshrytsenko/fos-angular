@@ -5,32 +5,51 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '../../model/user';
 import { UserService } from '../../service/user.service';
 import { StorageService } from '../../service/storage.service';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
 
   @ViewChild('registrationModal') registrationModal!: ElementRef;
   registerForm!: FormGroup;
   confirmPassword: string = '';
-
   user!: User;
 
   constructor(
     private formBuilder: FormBuilder, 
     private userService: UserService, 
     private router: Router,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private authService: AuthService
   ) {}
 
-  ngAfterViewInit(): void {
-    // Ensure modal is initialized after view is initialized
-    // Optionally, initialize the modal here if necessary
+  public ngOnInit(): void {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    (window as any).handleCredentialResponse = (response: any) => {
+      console.log('Encoded JWT ID token: ' + response.credential);
+      this.authService.verifyGoogleToken(response.credential).subscribe(
+        (data) => {
+          console.log('Google login successful:', data);
+          this.storageService.setItem('jwtToken', data.token);
+          this.router.navigate(['/menu']);
+        },
+        (error) => {
+          console.error('Google login failed:', error.message);
+        }
+      );
+    };
   }
 
   public onAuthenticate(loginForm: NgForm): void {
@@ -52,15 +71,6 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  public ngOnInit(): void {
-    // this.registerForm = this.formBuilder.group({
-    //   username: ['', Validators.required],
-    //   email: ['', [Validators.required, Validators.email]],
-    //   password: ['', [Validators.required, Validators.minLength(6)]],
-    //   confirmPassword: ['', Validators.required]
-    // });
-  }
-
   public onRegister(registerForm: NgForm) : void {
     console.log('entry point onRegister')
 
@@ -68,7 +78,6 @@ export class LoginComponent implements OnInit {
       this.userService.register(registerForm.value).subscribe(
         response => {
           console.log('User registered successfully', response);
-          // token saving
           this.router.navigate(['/login']);  
         },
         (error: HttpErrorResponse) => {
