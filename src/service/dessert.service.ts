@@ -9,7 +9,7 @@ import { Dessert } from "../model/dessert";
   })
   
   export class DessertService {
-    private apiServerUrl = environment.apiBaseUrl;
+    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(private http: HttpClient) { }
   

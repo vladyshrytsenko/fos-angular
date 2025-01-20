@@ -9,7 +9,7 @@ import { Subscription } from "../model/subscription";
   })
   
   export class SubscriptionService {
-    private apiServerUrl = environment.apiBaseUrl;
+    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(private http: HttpClient) { }
   

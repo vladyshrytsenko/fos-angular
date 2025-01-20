@@ -9,7 +9,7 @@ import { Drink } from "../model/drink";
   })
   
   export class DrinkService {
-    private apiServerUrl = environment.apiBaseUrl;
+    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(private http: HttpClient) { }
   

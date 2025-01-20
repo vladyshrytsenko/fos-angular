@@ -10,7 +10,7 @@ import { User } from '../model/user';
 })
 
 export class UserService {
-  private apiServerUrl = environment.apiBaseUrl;
+  private apiServerUrl = environment.apiAuthUrl;
 
   constructor(private http: HttpClient, private storageService: StorageService) { }
 

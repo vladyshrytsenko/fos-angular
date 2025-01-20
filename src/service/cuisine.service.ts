@@ -9,7 +9,7 @@ import { Cuisine } from "../model/cuisine";
   })
   
   export class CuisineService {
-    private apiServerUrl = environment.apiBaseUrl;
+    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(private http: HttpClient) { }
   

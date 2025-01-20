@@ -9,7 +9,7 @@ import { Order } from "../model/order";
   })
   
   export class OrderService {
-    private apiServerUrl = environment.apiBaseUrl;
+    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(private http: HttpClient) { }
   
