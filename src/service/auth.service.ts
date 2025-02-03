@@ -15,4 +15,8 @@ import { Observable } from "rxjs";
     verifyGoogleToken(token: string): Observable<any> {
       return this.http.post<any>(`${this.apiUrl}/auth/google`, { token });
     }
+
+    verifyGitHubToken(code: string): Observable<any> {
+      return this.http.post<any>(`${this.apiUrl}/github/callback`, { code });
+    }
   }

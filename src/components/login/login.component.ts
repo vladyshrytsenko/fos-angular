@@ -50,6 +50,23 @@ export class LoginComponent implements OnInit {
         }
       );
     };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const githubCode = urlParams.get('code');
+    if (githubCode) {
+      this.authService.verifyGitHubToken(githubCode).subscribe(
+        (data) => {
+          console.log('GitHub login successful:', data);
+          this.storageService.setItem('jwtToken', data.token);
+          this.router.navigate(['/menu']);
+        },
+        (error) => console.error('GitHub login failed:', error.message)
+      );
+    };
+  }
+
+  public loginWithGithub(): void {
+    window.location.href = 'http://localhost:9000/api/users/auth/github';
   }
 
   public onAuthenticate(loginForm: NgForm): void {
