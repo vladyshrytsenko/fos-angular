@@ -39,16 +39,7 @@
 
                 <div class="text-center">or</div>
 
-                <!-- Google Login Button -->
-                <div id="g_id_onload"
-                  data-client_id="653875561290-jtd5p8sda5ulj7ul6s2dofkmq7k1neht.apps.googleusercontent.com"
-                  data-callback="handleCredentialResponse"
-                  data-auto_prompt="true">
-                </div>
-                <div class="g_id_signin" data-type="standard" data-size="large"></div>
-
-                <!-- GitHub Login Button -->
-                <button (click)="loginWithGithub()">Login with GitHub</button>
+                <button (click)="loginWithOAuth2()" class="btn btn-primary">Login with OAuth2</button>
 
                 <a class="small text-muted" href="#!">Forgot password?</a>
                   <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? 

@@ -18,59 +18,26 @@ import { AuthService } from '../../service/auth.service';
 export class LoginComponent implements OnInit {
 
   @ViewChild('registrationModal') registrationModal!: ElementRef;
-  registerForm!: FormGroup;
   confirmPassword: string = '';
-  user!: User;
+
+  private clientId = 'qwerty123qwerty123';
+  private authServerUrl = 'http://localhost:9000/oauth2/authorize';
+  private tokenUrl = 'http://localhost:9000/oauth2/token';
+  private redirectUri = 'http://localhost:4200/menu';
 
   constructor(
-    private formBuilder: FormBuilder, 
     private userService: UserService, 
     private router: Router,
     private storageService: StorageService,
     private authService: AuthService
   ) {}
 
-  public ngOnInit(): void {
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-
-    (window as any).handleCredentialResponse = (response: any) => {
-      console.log('Encoded JWT ID token: ' + response.credential);
-      this.authService.verifyGoogleToken(response.credential).subscribe(
-        (data) => {
-          console.log('Google login successful:', data);
-          this.storageService.setItem('jwtToken', data.token);
-          this.router.navigate(['/menu']);
-        },
-        (error) => {
-          console.error('Google login failed:', error.message);
-        }
-      );
-    };
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const githubCode = urlParams.get('code');
-    if (githubCode) {
-      this.authService.verifyGitHubToken(githubCode).subscribe(
-        (data) => {
-          console.log('GitHub login successful:', data);
-          this.storageService.setItem('jwtToken', data.token);
-          this.router.navigate(['/menu']);
-        },
-        (error) => console.error('GitHub login failed:', error.message)
-      );
-    };
-  }
-
-  public loginWithGithub(): void {
-    window.location.href = 'http://localhost:9000/api/users/auth/github';
+  ngOnInit(): void {
+    this.handleOAuthCallback();
   }
 
   public onAuthenticate(loginForm: NgForm): void {
-    console.log('entry point onAuthenticate')
+    console.log('entry point onAuthenticate');
 
     const email = loginForm.value.email;
     const password = loginForm.value.password;
@@ -78,7 +45,6 @@ export class LoginComponent implements OnInit {
     this.userService.login(email, password).subscribe(
       data => {
         this.storageService.setItem('jwtToken', data.token);
-        
         console.log('User signed in successfully. token: ', data.token);
         this.router.navigate(['/menu']);
       },
@@ -88,8 +54,8 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  public onRegister(registerForm: NgForm) : void {
-    console.log('entry point onRegister')
+  public onRegister(registerForm: NgForm): void {
+    console.log('entry point onRegister');
 
     if (registerForm.valid && this.confirmPassword === registerForm.value.password) {
       this.userService.register(registerForm.value).subscribe(
@@ -98,11 +64,52 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/login']);  
         },
         (error: HttpErrorResponse) => {
-          alert(error.message)
+          alert(error.message);
         }
-      )
+      );
     } else {
       alert('Passwords do not match');
     }
+  }
+
+  /** Login via Spring Authorization Server */
+  public loginWithOAuth2(): void {
+    const authorizationUrl = `${this.authServerUrl}?response_type=code&client_id=${this.clientId}&redirect_uri=${this.redirectUri}&scope=openid profile`;
+    window.location.href = authorizationUrl;
+  }
+
+  private handleOAuthCallback(): void {
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode = urlParams.get('code');
+
+    if (authCode) {
+      this.exchangeCodeForToken(authCode);
+    }
+  }
+
+  redirectToAuthServer() {
+    window.location.href = `${this.authServerUrl}?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}`;
+  }
+
+  private exchangeCodeForToken(authCode: string): void {
+    fetch(this.tokenUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: authCode,
+        redirect_uri: this.redirectUri,
+        client_id: this.clientId,
+        client_secret: 'zxcvb123'
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      this.storageService.setItem('jwtToken', data.access_token);
+      this.router.navigate(['/menu']);
+    })
+    .catch(error => console.error('OAuth2 login failed:', error));
   }
 }

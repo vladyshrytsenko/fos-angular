@@ -7,6 +7,7 @@ import { AuthGuard } from '../login/auth-guard';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { PaymentSuccessComponent } from '../payment-success/payment-success.component';
+import { SafePipe } from '../report/pipes/safe.pipe';
 
 export const routes: Routes = [
     { 
@@ -24,11 +25,18 @@ export const routes: Routes = [
     },
     { 
       path: 'history', 
-      loadComponent: () => import('../history/history.component').then(m => m.HistoryComponent)
+      loadComponent: () => import('../history/history.component').then(m => m.HistoryComponent),
+      canActivate: [AuthGuard]
+    },
+    { 
+      path: 'report', 
+      loadComponent: () => import('../report/report.component').then(m => m.ReportComponent),
+      canActivate: [AuthGuard]
     },
     { 
       path: 'payment/:id', 
-      loadComponent: () => import('../payment/payment.component').then(m => m.PaymentComponent) 
+      loadComponent: () => import('../payment/payment.component').then(m => m.PaymentComponent),
+      canActivate: [AuthGuard]
     },
     { 
       path: '', 
@@ -57,6 +65,9 @@ export const routes: Routes = [
   ],
   exports: [
     RouterModule
+  ],
+  declarations: [
+    SafePipe
   ]
 })
 export class AppRoutingModule { }
