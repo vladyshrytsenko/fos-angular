@@ -45,6 +45,7 @@ export class MenuComponent implements OnInit {
   public order: Order = {
     id: 0,
     createdAt: new Date(),
+    createdBy: 1,
     updatedAt: new Date(),
     isDeleted: false,
     deletedAt: new Date(0),
@@ -80,28 +81,20 @@ export class MenuComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.findAllDrinks();
-    this.findAllDesserts();
-    this.findAllMeals();
+    // this.findAllDrinks();
+    // this.findAllDesserts();
+    // this.findAllMeals();
 
     this.cuisineService.findAll().subscribe(
       (response: Cuisine[]) => {
-        this.cuisines = response;
+        this.cuisines = response
       },
       (error) => {
         console.error('Error loading cuisines:', error);
       }
     );
 
-    this.userService.isAdmin().subscribe(
-      (isAdmin: boolean) => {
-        this.admin = isAdmin;
-      },
-      error => {
-        console.error('Error checking admin status:', error);
-        this.admin = false;
-      }
-    );
+    this.admin = this.userService.isAdmin();
   }
 
   showCreateDrinkModal(): void {

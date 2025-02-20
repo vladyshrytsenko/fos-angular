@@ -5,11 +5,13 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { User } from '../../model/user';
 import { UserService } from '../../service/user.service';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { AuthCallbackComponent } from '../auth-callback/auth-callback.component';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, JsonPipe, NavbarComponent],
+  imports: [RouterOutlet, CommonModule, JsonPipe, NavbarComponent, AuthCallbackComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -21,7 +23,11 @@ export class AppComponent implements OnInit{
   public testData: any;
   showNavbar: boolean = true;
 
-  constructor(private router: Router, private userService: UserService) {
+  constructor(
+    private router: Router, 
+    private userService: UserService,
+    private authService: AuthService
+  ) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.showNavbar = !(this.router.url === '/login' || this.router.url === '/404');
@@ -30,7 +36,9 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
-
+    this.authService.isAuthenticated$.subscribe((isAuth) => {
+      this.showNavbar = isAuth;
+    });
   }
 
   public getUserById(id: number): void {

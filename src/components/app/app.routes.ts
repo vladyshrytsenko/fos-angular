@@ -1,18 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { HttpClientModule, withFetch } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, withFetch } from '@angular/common/http';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { AuthGuard } from '../login/auth-guard';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { PaymentSuccessComponent } from '../payment-success/payment-success.component';
 import { SafePipe } from '../report/pipes/safe.pipe';
+import { JwtInterceptor } from '../login/jwt-interceptor';
 
 export const routes: Routes = [
     { 
       path: 'login', 
       loadComponent: () => import('../login/login.component').then(m => m.LoginComponent) 
+    },
+    { 
+      path: 'auth-callback', 
+      loadComponent: () => import('../auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent) 
     },
     { 
       path: 'menu', 
@@ -61,7 +66,8 @@ export const routes: Routes = [
     FormsModule
   ],
   providers: [
-    AuthGuard
+    AuthGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],
   exports: [
     RouterModule

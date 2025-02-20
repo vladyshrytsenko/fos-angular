@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { StorageService } from './storage.service';
 import { User } from '../model/user';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,13 @@ import { User } from '../model/user';
 
 export class UserService {
   private apiServerUrl = environment.apiAuthUrl;
+  userRole: any;
 
-  constructor(private http: HttpClient, private storageService: StorageService) { }
+  constructor(
+    private http: HttpClient, 
+    private storageService: StorageService,
+    private oauthService: OAuthService
+  ) { }
 
   public getUserById(id: number) : Observable<User> {
     return this.http.get<User>(`${this.apiServerUrl}/api/users/${id}`);
@@ -38,8 +44,8 @@ export class UserService {
     return this.http.post<any>(`${this.apiServerUrl}/api/users/auth/register`, user);
   } 
 
-  public login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiServerUrl}/api/users/auth/authenticate`, { email, password });
+  public login() {
+    this.oauthService.initCodeFlow();
   }
 
   public updateUser(id: number, user: User) : Observable<User> {
@@ -50,37 +56,18 @@ export class UserService {
     return this.http.delete<void>(`${this.apiServerUrl}/api/users/${id}`);
   }
 
-  public isAdmin(): Observable<boolean> {
-    return new Observable<boolean>((observer) => {
-      const token = this.storageService.getJwtToken()!;
+  public isAdmin(): boolean {
+    const token = this.storageService.getJwtToken()!;
   
       if (token != null) {
         const payload = this.decodeToken(token);
-        if (payload || payload.sub) {
-          this.getByUsername(payload.sub).subscribe(
-            (response: User) => {
-              if (response.role === 'ADMIN') {
-                observer.next(true);
-              } else {
-                observer.next(false);
-              }
-              observer.complete();
-            },
-            error => {
-              console.error('Error fetching user:', error);
-              observer.next(false);
-              observer.complete();
-            }
-          );
-        } else {
-          observer.next(false);
-          observer.complete();
+        if (payload || payload.role) {
+          if (payload.role === 'ADMIN') {
+            return true;
+          }
         }
-      } else {
-        observer.next(false);
-        observer.complete();
       }
-    });
+      return false;
   }
 
   public getCurrentUser(): Observable<User> {

@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../service/user.service';
 import { User } from '../../model/user';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -22,19 +23,14 @@ export class NavbarComponent implements OnInit {
   constructor(
     private storageService: StorageService, 
     private userService: UserService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.userService.isAdmin().subscribe(
-      (isAdmin: boolean) => {
-        this.admin = isAdmin;
-      },
-      error => {
-        console.error('Error checking admin status:', error);
-        this.admin = false;
-      }
-    );
+    // this.authService.authCallback();
+    
+    this.admin = this.userService.isAdmin();
     this.userService.getCurrentUser().subscribe(
       (response: User) => {
         this.user = response;

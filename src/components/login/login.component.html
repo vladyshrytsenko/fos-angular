@@ -12,7 +12,8 @@
             <div class="col-md-6 col-lg-7 d-flex align-items-center">
               <div class="card-body p-4 p-lg-5 text-black">
 
-                <form #loginForm="ngForm" (ngSubmit)="onAuthenticate(loginForm)">
+                <button (click)="onAuthenticate()">Sign In</button>
+                <!-- <form #loginForm="ngForm" (ngSubmit)="onAuthenticate(loginForm)">
 
                   <div class="d-flex align-items-center mb-3 pb-1">
                     <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
@@ -35,7 +36,7 @@
                     <button [disabled]="loginForm.invalid" id="login_button" type="submit" class="btn btn-success">Sign in</button>
                   </div>
 
-                </form>
+                </form> -->
 
                 <div class="text-center">or</div>
 

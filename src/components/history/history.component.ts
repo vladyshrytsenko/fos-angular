@@ -31,15 +31,7 @@ export class HistoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.isAdmin().subscribe(
-      (isAdmin: boolean) => {
-        this.admin = isAdmin;
-      },
-      error => {
-        console.error('Error checking admin status:', error);
-        this.admin = false;
-      }
-    );
+    this.admin = this.userService.isAdmin();
     this.findAllOrders();
   }
 
