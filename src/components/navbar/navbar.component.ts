@@ -1,9 +1,8 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../../service/storage.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { UserService } from '../../service/user.service';
 import { User } from '../../model/user';
 import { AuthService } from '../../service/auth.service';
@@ -28,7 +27,7 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.authService.authCallback();
+    this.authService.loginCallback();
     
     this.admin = this.userService.isAdmin();
     this.userService.getCurrentUser().subscribe(
@@ -44,8 +43,7 @@ export class NavbarComponent implements OnInit {
 
   public onLogout() : void {
     console.log('entry point onLogout')
-
-    this.storageService.removeJwtToken();
+    this.authService.logout();
     this.router.navigate(['/login']);
 
     console.log('Successfully logged out')

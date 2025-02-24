@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Renderer2, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { DrinkService } from '../../service/drink.service';
 import { CuisineService } from '../../service/cuisine.service';
 import { DessertService } from '../../service/dessert.service';
@@ -13,8 +13,9 @@ import { OrderService } from '../../service/order.service';
 import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../service/user.service';
-import { User } from '../../model/user';
 import { Modal } from 'bootstrap';
+import { PopularDishesService } from '../../service/popular-dishes.service';
+import { PopularDish } from '../../model/popular-dish';
 
 @Component({
   selector: 'app-menu',
@@ -29,15 +30,16 @@ export class MenuComponent implements OnInit {
 
   public drinks!: Drink[];
   public selectedDrinkName: string | null = null;
-  public isDrinkSelected: boolean = false;
 
   public desserts!: Dessert[];
   public selectedDessertName: string | null = null;
-  public isDessertSelected: boolean = false;
 
   public meals!: Meal[];
   public selectedMealName: string | null = null;
-  public isMealSelected: boolean = false;
+
+  public popularDishes: PopularDish[] = [];
+  public selectedPopularName: string | null = null;
+  public isPopularSelected: boolean = false;
 
   cuisines: Cuisine[] = [];
   selectedCuisine!: Cuisine;
@@ -45,7 +47,6 @@ export class MenuComponent implements OnInit {
   public order: Order = {
     id: 0,
     createdAt: new Date(),
-    createdBy: 1,
     updatedAt: new Date(),
     isDeleted: false,
     deletedAt: new Date(0),
@@ -74,16 +75,17 @@ export class MenuComponent implements OnInit {
     private dessertService: DessertService,
     private mealService: MealService,
     private orderService: OrderService,
+    private popularDishesService: PopularDishesService,
     private userService: UserService,
     private router: Router,
-    private el: ElementRef, 
-    private renderer: Renderer2
+    private el: ElementRef
   ) {}
 
   ngOnInit(): void {
-    // this.findAllDrinks();
-    // this.findAllDesserts();
-    // this.findAllMeals();
+    this.findPopularDishes();
+    this.findAllDrinks();
+    this.findAllDesserts();
+    this.findAllMeals();
 
     this.cuisineService.findAll().subscribe(
       (response: Cuisine[]) => {
@@ -133,6 +135,34 @@ export class MenuComponent implements OnInit {
       // Select a new drink
       this.selectedDrinkName = drinkName;
       this.orderCustom.drinkName = drinkName;
+      this.orderCustom.totalPrice += price;
+    }
+    console.log('Current custom Order:', this.orderCustom);
+  }
+
+  public selectPopular(popularName: string, price: number): void {
+    if (this.selectedPopularName === popularName) {
+      this.mealService.getByName(popularName).subscribe(
+        (_response: Meal) => {
+          this.orderCustom.mealName = '';
+        },
+        (_error) => {
+          this.orderCustom.dessertName = '';
+        });
+      
+      this.selectedPopularName = null;
+      if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
+        this.orderCustom.totalPrice -= price;
+      }
+    } else {
+      this.mealService.getByName(popularName).subscribe(
+        (_response: Meal) => {
+          this.orderCustom.mealName = popularName;
+        },
+        (_error) => {
+          this.orderCustom.dessertName = popularName;
+        });
+      this.selectedPopularName = popularName;
       this.orderCustom.totalPrice += price;
     }
     console.log('Current custom Order:', this.orderCustom);
@@ -188,6 +218,52 @@ export class MenuComponent implements OnInit {
         console.error('Order creation failed:', error);
         alert('Failed to create order. Please try again.');
       }
+    );
+  }
+
+  public findPopularDishes(): void {
+    this.popularDishesService.findAll().subscribe( 
+      (response: Map<string, string[]>) => {
+        Object.entries(response).forEach( ([key, value]) => {
+          const valueArray: string[] = value as string[];
+
+          if (key === 'MEAL') {
+            valueArray.forEach(item => {
+              this.mealService.getByName(item).subscribe(
+                (response: Meal) => {
+                  const dish: PopularDish = {
+                    name: response.name,
+                    cuisineName: response.cuisineName,
+                    price: response.price,
+                    portionWeight: response.portionWeight
+                  }
+
+                  this.popularDishes.push(dish);
+                }
+              );
+            });
+          } else if (key === 'DESSERT') {
+            valueArray.forEach(item => {
+              this.dessertService.getByName(item).subscribe(
+                (response: Dessert) => {
+                  const dish: PopularDish = {
+                    name: response.name,
+                    price: response.price,
+                    portionWeight: response.portionWeight
+                  }
+
+                  this.popularDishes.push(dish);
+                }
+              );
+            });
+          }
+        });
+
+        console.log('popular: ', this.popularDishes);
+      },
+      error => {
+        alert(error.message);
+      } 
     );
   }
 

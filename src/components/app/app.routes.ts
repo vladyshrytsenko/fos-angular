@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule, withFetch } from '@angular/common/http';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { AuthGuard } from '../login/auth-guard';
@@ -17,7 +16,7 @@ export const routes: Routes = [
     },
     { 
       path: 'auth-callback', 
-      loadComponent: () => import('../auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent) 
+      loadComponent: () => import('../navbar/navbar.component').then(m => m.NavbarComponent) 
     },
     { 
       path: 'menu', 

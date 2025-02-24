@@ -6,23 +6,22 @@ import { StorageService } from "./storage.service";
 
 @Injectable({
     providedIn: 'root'
-  })
-  export class ReportService {
+})
+export class PopularDishesService {
     private apiServerUrl = environment.apiCoreUrl;
   
     constructor(
       private http: HttpClient,
       private storageService: StorageService
-    ) {}
-  
-    generateReport(): Observable<Blob> {
+    ) { }
+
+    public findAll() : Observable<Map<string, string[]>> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.post<Blob>(`${this.apiServerUrl}/api/reports`, null, {
-          responseType: 'blob' as 'json', 
-          headers: new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-          })
+      return this.http.get<Map<string, string[]>>(`${this.apiServerUrl}/api/popular`, { 
+        headers: new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        })
       });
     }
-  }
+}

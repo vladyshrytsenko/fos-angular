@@ -1,6 +1,32 @@
 <div class="menu">
   <h2>Menu</h2>
 
+  <h3>Popular</h3>
+  <table>
+    <tr>
+      <th class="name-column">Name</th>
+      <th class="price-column">Price</th>
+      <th class="cuisine-column">Cuisine</th>
+    </tr>
+    <tr *ngFor="let dish of popularDishes">
+      <td>{{ dish.name }}</td>
+      <td>{{ dish.price }} usd</td>
+      <td>{{ dish.cuisineName }}</td>
+      <td>
+        <button type="button" 
+              class="btn" 
+              [ngClass]="{
+                  'btn-success': selectedPopularName !== dish.name,
+                  'btn-secondary': selectedPopularName === dish.name
+              }" 
+              (click)="selectPopular(dish.name, dish.price)" 
+              [disabled]="selectedPopularName !== null && selectedPopularName !== dish.name">
+        {{ selectedPopularName === dish.name ? 'Selected' : 'Select' }}
+      </button>
+      </td>
+    </tr>
+  </table>
+
   <h3>Drinks</h3>
   <button *ngIf="admin" (click)="showCreateDrinkModal()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDrinkModal">
     Add

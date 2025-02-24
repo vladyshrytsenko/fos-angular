@@ -6,7 +6,7 @@ import { Payment } from "./payment";
 export interface Order {
     id: number;
     createdAt: Date;
-    createdBy: number;
+    createdBy?: number;
     updatedAt: Date;
     isDeleted: boolean;
     deletedAt: Date;

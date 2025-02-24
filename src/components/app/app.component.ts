@@ -1,17 +1,16 @@
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { User } from '../../model/user';
 import { UserService } from '../../service/user.service';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { AuthCallbackComponent } from '../auth-callback/auth-callback.component';
 import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, JsonPipe, NavbarComponent, AuthCallbackComponent],
+  imports: [RouterOutlet, CommonModule, NavbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -36,9 +35,6 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.authService.isAuthenticated$.subscribe((isAuth) => {
-      this.showNavbar = isAuth;
-    });
   }
 
   public getUserById(id: number): void {
@@ -96,4 +92,3 @@ export class AppComponent implements OnInit{
     );
   }
 }
-

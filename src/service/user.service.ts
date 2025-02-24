@@ -21,39 +21,77 @@ export class UserService {
   ) { }
 
   public getUserById(id: number) : Observable<User> {
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/${id}`);
+    const token = this.storageService.getJwtToken();
+
+    return this.http.get<User>(`${this.apiServerUrl}/api/users/${id}`, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   } 
 
   public getByUsername(username: string) : Observable<User> {
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/username/${username}`);
+    const token = this.storageService.getJwtToken();
+
+    return this.http.get<User>(`${this.apiServerUrl}/api/users/username/${username}`, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   } 
 
   public getByEmail(email: string) : Observable<User> {
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/email/${email}`);
+    const token = this.storageService.getJwtToken();
+
+    return this.http.get<User>(`${this.apiServerUrl}/api/users/email/${email}`, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   }
 
   public getByRole(role: string) : Observable<User> {
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/role/${role}`);
+    const token = this.storageService.getJwtToken();
+
+    return this.http.get<User>(`${this.apiServerUrl}/api/users/role/${role}`, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   } 
 
   public findAll() : Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiServerUrl}/api/users`);
+    const token = this.storageService.getJwtToken();
+
+    return this.http.get<User[]>(`${this.apiServerUrl}/api/users`, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   } 
 
   public register(user: User): Observable<any> {
     return this.http.post<any>(`${this.apiServerUrl}/api/users/auth/register`, user);
-  } 
-
-  public login() {
-    this.oauthService.initCodeFlow();
   }
 
   public updateUser(id: number, user: User) : Observable<User> {
-    return this.http.put<User>(`${this.apiServerUrl}/api/users/${id}`, user);
+    const token = this.storageService.getJwtToken();
+
+    return this.http.put<User>(`${this.apiServerUrl}/api/users/${id}`, user, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   } 
 
   public deleteUserById(id: number) : Observable<void> {
-    return this.http.delete<void>(`${this.apiServerUrl}/api/users/${id}`);
+    const token = this.storageService.getJwtToken();
+
+    return this.http.delete<void>(`${this.apiServerUrl}/api/users/${id}`, { 
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   }
 
   public isAdmin(): boolean {
@@ -72,6 +110,7 @@ export class UserService {
 
   public getCurrentUser(): Observable<User> {
     const token = this.storageService.getJwtToken();
+
     return this.http.get<User>(`${this.apiServerUrl}/api/users/current-user`, {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
@@ -88,5 +127,4 @@ export class UserService {
       return null;
     }
   }
-
 }

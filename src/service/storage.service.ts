@@ -38,3 +38,4 @@ import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
       this.removeItem('jwtToken')
     }
   }
+  

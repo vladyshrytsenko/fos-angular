@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { loadStripe } from '@stripe/stripe-js';
 import { ActivatedRoute } from '@angular/router';
+import { StorageService } from '../../service/storage.service';
 
 @Component({
   selector: 'app-payment',
@@ -19,7 +20,10 @@ export class PaymentComponent implements OnInit {
   message: string | null = null;
   totalPrice: number = 0;
   
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private storageService: StorageService
+  ) {}
 
   ngOnInit(): void {
     this.loadStripeAndInitialize();
@@ -85,9 +89,14 @@ export class PaymentComponent implements OnInit {
   
 
   async fetchPaymentIntent() {
+    const token = this.storageService.getJwtToken();
+
     const response = await fetch('http://localhost:8080/api/payments/create-payment-intent', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({ amount: this.totalPrice, currency: 'usd' })
     });
     const data = await response.json();

@@ -18,23 +18,42 @@ import { StorageService } from "./storage.service";
     ) { }
   
     public getById(id: number) : Observable<Order> {
-      return this.http.get<Order>(`${this.apiServerUrl}/api/orders/${id}`);
+      const token = this.storageService.getJwtToken();
+      
+      return this.http.get<Order>(`${this.apiServerUrl}/api/orders/${id}`, { 
+        headers: new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        })
+      });
     } 
 
     public findAll() : Observable<Order[]> {
-        return this.http.get<Order[]>(`${this.apiServerUrl}/api/orders`);
+      const token = this.storageService.getJwtToken();
+
+      return this.http.get<Order[]>(`${this.apiServerUrl}/api/orders`, { 
+        headers: new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        })
+      });
     } 
   
     public create(order: Order) : Observable<Order> {
       const token = this.storageService.getJwtToken();
-      const headers = new HttpHeaders()
-        .set('Authorization', `Bearer ${token}`);
 
-    return this.http.post<Order>(`${this.apiServerUrl}/api/orders`, order, { headers });
+      return this.http.post<Order>(`${this.apiServerUrl}/api/orders`, order, { 
+        headers: new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        })
+      });
     }
   
     public deleteById(id: number) : Observable<void> {
-      return this.http.delete<void>(`${this.apiServerUrl}/api/orders/${id}`);
+      const token = this.storageService.getJwtToken();
+
+      return this.http.delete<void>(`${this.apiServerUrl}/api/orders/${id}`, { 
+        headers: new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        })
+      });
     } 
-  
   }
