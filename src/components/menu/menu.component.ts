@@ -29,16 +29,16 @@ export class MenuComponent implements OnInit {
   public admin!: boolean;
 
   public drinks!: Drink[];
-  public selectedDrinkName: string | null = null;
+  public selectedDrinkNames: string[] = [];
 
   public desserts!: Dessert[];
-  public selectedDessertName: string | null = null;
+  public selectedDessertNames: string[] = [];
 
   public meals!: Meal[];
-  public selectedMealName: string | null = null;
+  public selectedMealNames: string[] = [];
 
   public popularDishes: PopularDish[] = [];
-  public selectedPopularName: string | null = null;
+  public selectedPopularNames: string[] = [];
   public isPopularSelected: boolean = false;
 
   cuisines: Cuisine[] = [];
@@ -52,21 +52,22 @@ export class MenuComponent implements OnInit {
     deletedAt: new Date(0),
     totalPrice: 0,
     dessertId: 0,
-    dessertName: '',
     mealId: 0,
-    mealName: '',
     drinkId: 0,
-    drinkName: '',
     paymentId: '',
     iceCubes: false,
     lemon: false
   };
 
-  public orderCustom = {
-    drinkName: '',
-    mealName: '',
-    dessertName: '',
-    totalPrice: 0
+  public orderCustom: { 
+    drinkNames: string[], 
+    mealNames: string[], 
+    dessertNames: string[], 
+    totalPrice: number} = {
+      drinkNames: [],
+      mealNames: [],
+      dessertNames: [],
+      totalPrice: 0
   };
 
   constructor(
@@ -124,87 +125,104 @@ export class MenuComponent implements OnInit {
   }
 
   public selectDrink(drinkName: string, price: number): void {
-    if (this.selectedDrinkName === drinkName) {
+    if (this.selectedDrinkNames.includes(drinkName)) {
       // Deselect the drink
-      this.selectedDrinkName = null;
-      this.orderCustom.drinkName = '';
+      this.selectedDrinkNames.splice(this.selectedDrinkNames.indexOf(drinkName), 1);
+      this.orderCustom.drinkNames.splice(this.orderCustom.drinkNames.indexOf(drinkName), 1);
+      
       if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
         this.orderCustom.totalPrice -= price;
       }
     } else {
       // Select a new drink
-      this.selectedDrinkName = drinkName;
-      this.orderCustom.drinkName = drinkName;
-      this.orderCustom.totalPrice += price;
+      this.selectedDrinkNames.push(drinkName);
+      if (!this.orderCustom.drinkNames.includes(drinkName)) {
+        this.orderCustom.drinkNames.push(drinkName);
+        this.orderCustom.totalPrice += price;
+      }
     }
     console.log('Current custom Order:', this.orderCustom);
   }
 
   public selectPopular(popularName: string, price: number): void {
-    if (this.selectedPopularName === popularName) {
+    // Deselect the dish from popular
+    if (this.selectedPopularNames.includes(popularName)) {
       this.mealService.getByName(popularName).subscribe(
         (_response: Meal) => {
-          this.orderCustom.mealName = '';
+          this.orderCustom.mealNames.splice(this.orderCustom.mealNames.indexOf(popularName), 1);
         },
         (_error) => {
-          this.orderCustom.dessertName = '';
+          this.orderCustom.dessertNames.splice(this.orderCustom.dessertNames.indexOf(popularName), 1);
         });
       
-      this.selectedPopularName = null;
+      this.selectedPopularNames.splice(this.selectedPopularNames.indexOf(popularName), 1);
       if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
         this.orderCustom.totalPrice -= price;
       }
+    // Select a new popular
     } else {
       this.mealService.getByName(popularName).subscribe(
         (_response: Meal) => {
-          this.orderCustom.mealName = popularName;
+          this.orderCustom.mealNames.push(popularName);
         },
         (_error) => {
-          this.orderCustom.dessertName = popularName;
+          this.orderCustom.dessertNames.push(popularName);
         });
-      this.selectedPopularName = popularName;
+      this.selectedPopularNames.push(popularName);
       this.orderCustom.totalPrice += price;
     }
     console.log('Current custom Order:', this.orderCustom);
   }
 
   public selectMeal(mealName: string, price: number): void {
-    if (this.selectedMealName === mealName) {
-      this.orderCustom.mealName = '';
-      this.selectedMealName = null;
+    // Deselect the meal
+    if (this.selectedMealNames.includes(mealName)) {
+
+      this.orderCustom.mealNames.splice(this.orderCustom.mealNames.indexOf(mealName), 1);
+      this.selectedMealNames.splice(this.selectedMealNames.indexOf(mealName), 1);
+
       if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
         this.orderCustom.totalPrice -= price;
       }
+    // Select a new meal
     } else {
-      this.orderCustom.mealName = mealName;
-      this.selectedMealName = mealName;
-      this.orderCustom.totalPrice += price;
+      this.selectedMealNames.push(mealName);
+      if (!this.orderCustom.mealNames.includes(mealName)) {
+        this.orderCustom.mealNames.push(mealName);
+        this.orderCustom.totalPrice += price;
+      }
     }
     console.log('Current custom Order:', this.orderCustom);
   }
 
   public selectDessert(dessertName: string, price: number): void {
-    if (this.selectedDessertName === dessertName) {
-      this.orderCustom.dessertName = '';
-      this.selectedDessertName = null;
+    // Deselect the dessert
+    if (this.selectedDessertNames.includes(dessertName)) {
+
+      this.orderCustom.dessertNames.splice(this.orderCustom.dessertNames.indexOf(dessertName), 1);
+      this.selectedDessertNames.splice(this.selectedDessertNames.indexOf(dessertName), 1);
+
       if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
         this.orderCustom.totalPrice -= price;
       }
+    // Select a new dessert
     } else {
-      this.orderCustom.dessertName = dessertName;
-      this.selectedDessertName = dessertName;
-      this.orderCustom.totalPrice += price;
+      this.selectedDessertNames.push(dessertName);
+      if (!this.orderCustom.dessertNames.includes(dessertName)) {
+        this.orderCustom.dessertNames.push(dessertName);
+        this.orderCustom.totalPrice += price;
+      }
     }
     console.log('Current custom Order:', this.orderCustom);
   }
 
   public submitOrder(): void {
     console.log('Order submitted:', this.orderCustom);
-    this.order.drinkName = this.orderCustom.drinkName;
+    this.order.drinkNames = this.orderCustom.drinkNames;
     this.order.iceCubes = true;
     this.order.lemon = true;
-    this.order.mealName = this.orderCustom.mealName ?? null;
-    this.order.dessertName = this.orderCustom.dessertName ?? null;
+    this.order.mealNames = this.orderCustom.mealNames;
+    this.order.dessertNames = this.orderCustom.dessertNames;
     this.order.totalPrice = parseFloat(this.orderCustom.totalPrice.toFixed(2)) * 100; // in cents
 
     this.orderService.create(this.order).subscribe(

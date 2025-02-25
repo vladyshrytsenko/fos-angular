@@ -9,13 +9,13 @@
         </div>
         <div class="card-body">
           <p class="card-text">
-            <strong>Meal:</strong> {{ order.meal?.name }} ({{ order.meal?.price }}$)
+            <strong>Meal:</strong> {{ order.mealNames }} ({{ getMealTotalPrice(order) }}$)
           </p>
           <p class="card-text">
-            <strong>Dessert:</strong> {{ order.dessert?.name }} ({{ order.dessert?.price }}$)
+            <strong>Dessert:</strong> {{ order.dessertNames }} ({{ getDessertTotalPrice(order) }}$)
           </p>
           <p class="card-text">
-            <strong>Drink:</strong> {{ order.drink?.name }} ({{ order.drink?.price }}$)
+            <strong>Drink:</strong> {{ order.drinkNames }} ({{ getDrinkTotalPrice(order) }}$)
             <span *ngIf="order.iceCubes" class="badge bg-primary ms-2">Ice</span>
             <span *ngIf="order.lemon" class="badge bg-warning text-dark ms-2">Lemon</span>
           </p>

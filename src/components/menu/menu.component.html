@@ -16,12 +16,11 @@
         <button type="button" 
               class="btn" 
               [ngClass]="{
-                  'btn-success': selectedPopularName !== dish.name,
-                  'btn-secondary': selectedPopularName === dish.name
+                  'btn-success': !selectedPopularNames.includes(dish.name),
+                  'btn-secondary': selectedPopularNames.includes(dish.name)
               }" 
-              (click)="selectPopular(dish.name, dish.price)" 
-              [disabled]="selectedPopularName !== null && selectedPopularName !== dish.name">
-        {{ selectedPopularName === dish.name ? 'Selected' : 'Select' }}
+              (click)="selectPopular(dish.name, dish.price)">
+        {{ selectedPopularNames.includes(dish.name) ? 'Selected' : 'Select' }}
       </button>
       </td>
     </tr>
@@ -43,12 +42,11 @@
         <button type="button" 
               class="btn" 
               [ngClass]="{
-                  'btn-success': selectedDrinkName !== drink.name,
-                  'btn-secondary': selectedDrinkName === drink.name
+                  'btn-success': !selectedDrinkNames.includes(drink.name),
+                  'btn-secondary': selectedDrinkNames.includes(drink.name)
               }" 
-              (click)="selectDrink(drink.name, drink.price)" 
-              [disabled]="selectedDrinkName !== null && selectedDrinkName !== drink.name">
-        {{ selectedDrinkName === drink.name ? 'Selected' : 'Select' }}
+              (click)="selectDrink(drink.name, drink.price)">
+        {{ selectedDrinkNames.includes(drink.name) ? 'Selected' : 'Select' }}
       </button>
       </td>
     </tr>
@@ -75,12 +73,11 @@
         <button type="button" 
               class="btn" 
               [ngClass]="{
-                  'btn-success': selectedMealName !== meal.name,
-                  'btn-secondary': selectedMealName === meal.name
+                  'btn-success': !selectedMealNames.includes(meal.name),
+                  'btn-secondary': selectedMealNames.includes(meal.name)
               }" 
-              (click)="selectMeal(meal.name, meal.price)" 
-              [disabled]="selectedMealName !== null && selectedMealName !== meal.name">
-        {{ selectedMealName === meal.name ? 'Selected' : 'Select' }}
+              (click)="selectMeal(meal.name, meal.price)">
+        {{ selectedMealNames.includes(meal.name) ? 'Selected' : 'Select' }}
       </button>
       </td>
     </tr>
@@ -102,12 +99,11 @@
         <button type="button" 
               class="btn" 
               [ngClass]="{
-                  'btn-success': selectedDessertName !== dessert.name,
-                  'btn-secondary': selectedDessertName === dessert.name
+                  'btn-success': !selectedDessertNames.includes(dessert.name),
+                  'btn-secondary': selectedDessertNames.includes(dessert.name)
               }" 
-              (click)="selectDessert(dessert.name, dessert.price)" 
-              [disabled]="selectedDessertName !== null && selectedDessertName !== dessert.name">
-        {{ selectedDessertName === dessert.name ? 'Selected' : 'Select' }}
+              (click)="selectDessert(dessert.name, dessert.price)">
+        {{ selectedDessertNames.includes(dessert.name) ? 'Selected' : 'Select' }}
       </button>
       </td>
     </tr>
@@ -164,7 +160,7 @@
               name="price"
               ngModel
               required
-              min="0.1"
+              min="0.0"
             />
             <!-- Error Messages for Drink Price -->
             <div *ngIf="createDrinkForm.submitted || createDrinkForm.controls['price']?.touched">
@@ -172,7 +168,7 @@
                 Price is required.
               </small>
               <small class="text-danger" *ngIf="createDrinkForm.controls['price']?.errors?.['min']">
-                Price must be greater than 0.
+                Price must be positive.
               </small>
             </div>
           </div>

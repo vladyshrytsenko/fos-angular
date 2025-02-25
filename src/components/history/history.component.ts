@@ -65,19 +65,54 @@ export class HistoryComponent implements OnInit {
   public findAllOrders(): void {
     this.orderService.findAll().subscribe( 
       (response: Order[]) => {
-        this.orders = response;
-        console.log('orders: ', response);
+        this.orders = response
+        .sort((a, b) => b.id - a.id)
+        .map(order => ({
+          ...order,
+          dessertNames: order.desserts?.map(dessert => dessert.name) || [],
+          drinkNames: order.drinks?.map(drink => drink.name) || [],
+          mealNames: order.meals?.map(meal => meal.name) || []
+        }));
+  
+        console.log('orders: ', this.orders);
       },
       error => {
         alert(error.message);
       } 
     );
+  }  
+
+  getDessertTotalPrice(order: Order): number {
+    let totalPrice = 0;
+    order.desserts?.forEach(dessert => {
+      totalPrice += dessert.price;
+    });
+  
+    return parseFloat(totalPrice.toFixed(2));
   }
 
-  getTotalPrice(order: any): number {
-    const mealPrice = order.meal?.price ?? 0;
-    const dessertPrice = order.dessert?.price ?? 0;
-    const drinkPrice = order.drink?.price ?? 0;
+  getDrinkTotalPrice(order: Order): number {
+    let totalPrice = 0;
+    order.drinks?.forEach(drink => {
+      totalPrice += drink.price;
+    });
+  
+    return parseFloat(totalPrice.toFixed(2));
+  }
+
+  getMealTotalPrice(order: Order): number {
+    let totalPrice = 0;
+    order.meals?.forEach(meal => {
+      totalPrice += meal.price;
+    });
+  
+    return parseFloat(totalPrice.toFixed(2));
+  }
+
+  getTotalPrice(order: Order): number {
+    const mealPrice = this.getMealTotalPrice(order);
+    const dessertPrice = this.getDessertTotalPrice(order);
+    const drinkPrice = this.getDrinkTotalPrice(order);
   
     const totalPrice = mealPrice + dessertPrice + drinkPrice;
     return parseFloat(totalPrice.toFixed(2));

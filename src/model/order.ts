@@ -12,16 +12,16 @@ export interface Order {
     deletedAt: Date;
     totalPrice: number;
     dessertId: number;
-    dessert?: Dessert;
+    desserts?: Dessert[];
     mealId: number;
-    meal?: Meal;
+    meals?: Meal[];
     drinkId: number;
-    drink?: Drink;
+    drinks?: Drink[];
     paymentId: string;
     payment?: Payment;
-    dessertName: string;
-    mealName: string;
-    drinkName: string;
+    dessertNames?: string[];
+    mealNames?: string[];
+    drinkNames?: string[];
     iceCubes: boolean;
     lemon: boolean;
 }
