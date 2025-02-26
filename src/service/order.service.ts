@@ -8,9 +8,7 @@ import { StorageService } from "./storage.service";
 @Injectable({
     providedIn: 'root'
   })
-  
   export class OrderService {
-    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(
       private http: HttpClient,
@@ -20,7 +18,7 @@ import { StorageService } from "./storage.service";
     public getById(id: number) : Observable<Order> {
       const token = this.storageService.getJwtToken();
       
-      return this.http.get<Order>(`${this.apiServerUrl}/api/orders/${id}`, { 
+      return this.http.get<Order>(`${environment.gatewayUrl}/api/core/orders/${id}`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -30,7 +28,7 @@ import { StorageService } from "./storage.service";
     public findAll() : Observable<Order[]> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.get<Order[]>(`${this.apiServerUrl}/api/orders`, { 
+      return this.http.get<Order[]>(`${environment.gatewayUrl}/api/core/orders`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -40,7 +38,7 @@ import { StorageService } from "./storage.service";
     public create(order: Order) : Observable<Order> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.post<Order>(`${this.apiServerUrl}/api/orders`, order, { 
+      return this.http.post<Order>(`${environment.gatewayUrl}/api/core/orders`, order, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -50,7 +48,7 @@ import { StorageService } from "./storage.service";
     public deleteById(id: number) : Observable<void> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.delete<void>(`${this.apiServerUrl}/api/orders/${id}`, { 
+      return this.http.delete<void>(`${environment.gatewayUrl}/api/core/orders/${id}`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })

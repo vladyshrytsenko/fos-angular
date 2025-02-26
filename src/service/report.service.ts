@@ -8,7 +8,6 @@ import { StorageService } from "./storage.service";
     providedIn: 'root'
   })
   export class ReportService {
-    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(
       private http: HttpClient,
@@ -18,7 +17,7 @@ import { StorageService } from "./storage.service";
     generateReport(): Observable<Blob> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.post<Blob>(`${this.apiServerUrl}/api/reports`, null, {
+      return this.http.post<Blob>(`${environment.gatewayUrl}/api/core/reports`, null, {
           responseType: 'blob' as 'json', 
           headers: new HttpHeaders({
             'Authorization': `Bearer ${token}`

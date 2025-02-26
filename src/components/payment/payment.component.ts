@@ -91,7 +91,7 @@ export class PaymentComponent implements OnInit {
   async fetchPaymentIntent() {
     const token = this.storageService.getJwtToken();
 
-    const response = await fetch('http://localhost:8080/api/payments/create-payment-intent', {
+    const response = await fetch(`${environment.gatewayUrl}/api/core/payments/create-payment-intent`, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json', 

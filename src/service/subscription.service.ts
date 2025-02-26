@@ -8,9 +8,7 @@ import { StorageService } from "./storage.service";
 @Injectable({
     providedIn: 'root'
   })
-  
   export class SubscriptionService {
-    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(
       private http: HttpClient,
@@ -20,7 +18,7 @@ import { StorageService } from "./storage.service";
     public create(subscription: Subscription) : Observable<Subscription> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.post<Subscription>(`${this.apiServerUrl}/api/subscriptions`, subscription, { 
+      return this.http.post<Subscription>(`${environment.gatewayUrl}/api/core/subscriptions`, subscription, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })

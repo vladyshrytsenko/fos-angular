@@ -8,9 +8,7 @@ import { StorageService } from "./storage.service";
 @Injectable({
     providedIn: 'root'
   })
-  
   export class DrinkService {
-    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(
       private http: HttpClient,
@@ -20,7 +18,7 @@ import { StorageService } from "./storage.service";
     public getById(id: number) : Observable<Drink> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.get<Drink>(`${this.apiServerUrl}/api/drinks/${id}`, { 
+      return this.http.get<Drink>(`${environment.gatewayUrl}/api/core/drinks/${id}`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -30,7 +28,7 @@ import { StorageService } from "./storage.service";
     public findAll() : Observable<Drink[]> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.get<Drink[]>(`${this.apiServerUrl}/api/drinks`, { 
+      return this.http.get<Drink[]>(`${environment.gatewayUrl}/api/core/drinks`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -40,7 +38,7 @@ import { StorageService } from "./storage.service";
     public create(drink: Drink) : Observable<Drink> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.post<Drink>(`${this.apiServerUrl}/api/drinks`, drink, { 
+      return this.http.post<Drink>(`${environment.gatewayUrl}/api/core/drinks`, drink, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -50,7 +48,7 @@ import { StorageService } from "./storage.service";
     public updateById(id: number, drink: Drink) : Observable<Drink> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.put<Drink>(`${this.apiServerUrl}/api/drinks/${id}`, drink, { 
+      return this.http.put<Drink>(`${environment.gatewayUrl}/api/core/drinks/${id}`, drink, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -60,7 +58,7 @@ import { StorageService } from "./storage.service";
     public deleteById(id: number) : Observable<void> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.delete<void>(`${this.apiServerUrl}/api/drinks/${id}`, { 
+      return this.http.delete<void>(`${environment.gatewayUrl}/api/core/drinks/${id}`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })

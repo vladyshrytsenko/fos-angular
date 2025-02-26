@@ -8,7 +8,6 @@ import { StorageService } from "./storage.service";
     providedIn: 'root'
 })
 export class PopularDishesService {
-    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(
       private http: HttpClient,
@@ -18,7 +17,7 @@ export class PopularDishesService {
     public findAll() : Observable<Map<string, string[]>> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.get<Map<string, string[]>>(`${this.apiServerUrl}/api/popular`, { 
+      return this.http.get<Map<string, string[]>>(`${environment.gatewayUrl}/api/core/popular`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })

@@ -8,9 +8,7 @@ import { StorageService } from "./storage.service";
 @Injectable({
     providedIn: 'root'
   })
-  
   export class MealService {
-    private apiServerUrl = environment.apiCoreUrl;
   
     constructor(
       private http: HttpClient,
@@ -20,7 +18,7 @@ import { StorageService } from "./storage.service";
     public getById(id: number) : Observable<Meal> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.get<Meal>(`${this.apiServerUrl}/api/meals/${id}`, { 
+      return this.http.get<Meal>(`${environment.gatewayUrl}/api/core/meals/${id}`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -30,7 +28,7 @@ import { StorageService } from "./storage.service";
     public getByName(name: string) : Observable<Meal> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.get<Meal>(`${this.apiServerUrl}/api/meals/searchBy?name=${name}`, { 
+      return this.http.get<Meal>(`${environment.gatewayUrl}/api/core/meals/searchBy?name=${name}`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -40,7 +38,7 @@ import { StorageService } from "./storage.service";
     public findAll() : Observable<Meal[]> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.get<Meal[]>(`${this.apiServerUrl}/api/meals`, { 
+      return this.http.get<Meal[]>(`${environment.gatewayUrl}/api/core/meals`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -50,7 +48,7 @@ import { StorageService } from "./storage.service";
     public create(meal: Meal) : Observable<Meal> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.post<Meal>(`${this.apiServerUrl}/api/meals`, meal, { 
+      return this.http.post<Meal>(`${environment.gatewayUrl}/api/core/meals`, meal, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -60,7 +58,7 @@ import { StorageService } from "./storage.service";
     public updateById(id: number, meal: Meal) : Observable<Meal> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.put<Meal>(`${this.apiServerUrl}/api/meals/${id}`, meal, { 
+      return this.http.put<Meal>(`${environment.gatewayUrl}/api/core/meals/${id}`, meal, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })
@@ -70,7 +68,7 @@ import { StorageService } from "./storage.service";
     public deleteById(id: number) : Observable<void> {
       const token = this.storageService.getJwtToken();
 
-      return this.http.delete<void>(`${this.apiServerUrl}/api/meals/${id}`, { 
+      return this.http.delete<void>(`${environment.gatewayUrl}/api/core/meals/${id}`, { 
         headers: new HttpHeaders({
           'Authorization': `Bearer ${token}`
         })

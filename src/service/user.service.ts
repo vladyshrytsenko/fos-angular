@@ -9,10 +9,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 @Injectable({
   providedIn: 'root'
 })
-
 export class UserService {
-  private apiServerUrl = environment.apiAuthUrl;
-  userRole: any;
 
   constructor(
     private http: HttpClient, 
@@ -23,7 +20,7 @@ export class UserService {
   public getUserById(id: number) : Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/${id}`, { 
+    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/${id}`, { 
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
@@ -33,7 +30,7 @@ export class UserService {
   public getByUsername(username: string) : Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/username/${username}`, { 
+    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/username/${username}`, { 
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
@@ -43,7 +40,7 @@ export class UserService {
   public getByEmail(email: string) : Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/email/${email}`, { 
+    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/email/${email}`, { 
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
@@ -53,7 +50,7 @@ export class UserService {
   public getByRole(role: string) : Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/role/${role}`, { 
+    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/role/${role}`, { 
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
@@ -63,7 +60,7 @@ export class UserService {
   public findAll() : Observable<User[]> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.get<User[]>(`${this.apiServerUrl}/api/users`, { 
+    return this.http.get<User[]>(`${environment.gatewayUrl}/api/auth/users`, { 
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
@@ -71,13 +68,13 @@ export class UserService {
   } 
 
   public register(user: User): Observable<any> {
-    return this.http.post<any>(`${this.apiServerUrl}/api/users/auth/register`, user);
+    return this.http.post<any>(`${environment.gatewayUrl}/api/auth/users/auth/register`, user);
   }
 
   public updateUser(id: number, user: User) : Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.put<User>(`${this.apiServerUrl}/api/users/${id}`, user, { 
+    return this.http.put<User>(`${environment.gatewayUrl}/api/auth/users/${id}`, user, { 
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
@@ -87,7 +84,7 @@ export class UserService {
   public deleteUserById(id: number) : Observable<void> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.delete<void>(`${this.apiServerUrl}/api/users/${id}`, { 
+    return this.http.delete<void>(`${environment.gatewayUrl}/api/auth/users/${id}`, { 
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
@@ -111,7 +108,7 @@ export class UserService {
   public getCurrentUser(): Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.get<User>(`${this.apiServerUrl}/api/users/current-user`, {
+    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/current-user`, {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })

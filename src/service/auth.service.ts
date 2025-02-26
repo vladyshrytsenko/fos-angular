@@ -12,7 +12,7 @@ import { environment } from "../environments/environment";
   export class AuthService {
 
     // private apiUrl = 'http://localhost:9000/api/users';
-    private apiServerUrl = environment.apiAuthUrl;
+    private apiServerUrl = 'http://localhost:9000';
     private redirectUri = 'http://localhost:4200/auth-callback';
     // private tokenUrl = 'http://localhost:9000/oauth2/token';
     private clientId = 'client';
@@ -59,6 +59,7 @@ import { environment } from "../environments/environment";
           this.exchangeCodeForToken(code).subscribe({
             next: () => {
               console.log('Token received, navigating to /menu');
+              console.log('token: ', this.storageService.getJwtToken());
               this.router.navigate(['/menu']);
             },
             error: (err) => {
