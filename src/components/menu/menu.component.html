@@ -13,21 +13,19 @@
       <td>{{ dish.price }} usd</td>
       <td>{{ dish.cuisineName }}</td>
       <td>
-        <button type="button" 
-              class="btn" 
-              [ngClass]="{
-                  'btn-success': !selectedPopularNames.includes(dish.name),
-                  'btn-secondary': selectedPopularNames.includes(dish.name)
-              }" 
-              (click)="selectPopular(dish.name, dish.price)">
-        {{ selectedPopularNames.includes(dish.name) ? 'Selected' : 'Select' }}
-      </button>
+        <button type="button" class="btn" [ngClass]="{
+                  'btn-outline-success': !selectedPopularNames.includes(dish.name),
+                  'btn-outline-secondary': selectedPopularNames.includes(dish.name)
+              }" (click)="selectPopular(dish.name, dish.price)">
+          {{ selectedPopularNames.includes(dish.name) ? 'Selected' : 'Select' }}
+        </button>
       </td>
     </tr>
   </table>
 
   <h3>Drinks</h3>
-  <button *ngIf="admin" (click)="showCreateDrinkModal()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDrinkModal">
+  <button *ngIf="admin" (click)="showCreateDrinkModal()" type="button" class="btn btn-outline-primary btn-sm"
+    data-bs-toggle="modal" data-bs-target="#createDrinkModal">
     Add
   </button>
   <table>
@@ -39,24 +37,42 @@
       <td>{{ drink.name }}</td>
       <td>{{ drink.price }} usd</td>
       <td>
-        <button type="button" 
-              class="btn" 
-              [ngClass]="{
-                  'btn-success': !selectedDrinkNames.includes(drink.name),
-                  'btn-secondary': selectedDrinkNames.includes(drink.name)
-              }" 
-              (click)="selectDrink(drink.name, drink.price)">
-        {{ selectedDrinkNames.includes(drink.name) ? 'Selected' : 'Select' }}
-      </button>
+        <button type="button" class="btn" [ngClass]="{
+                  'btn-outline-success': !orderCustom.drinks.includes(drink),
+                  'btn-outline-secondary': orderCustom.drinks.includes(drink)
+              }" (click)="selectDrink(drink)">
+          {{ orderCustom.drinks.includes(drink) ? 'Selected' : 'Select' }}
+        </button>
       </td>
     </tr>
   </table>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <!-- Drinks pagination -->
+    <div>
+      <button (click)="onDrinkPageChange(drinkCurrentPage - 1)" class="btn btn-light btn-sm"
+        [disabled]="drinkCurrentPage <= 0">Prev</button>
+      <span> {{drinkCurrentPage + 1}} / {{drinkTotalPages}} </span>
+      <button (click)="onDrinkPageChange(drinkCurrentPage + 1)" class="btn btn-light btn-sm"
+        [disabled]="(drinkCurrentPage + 1) * drinkPageSize >= drinkTotalElements">Next</button>
+    </div>
+
+    <!-- Drinks page items count -->
+    <div>
+      <select class="custom-select custom-select-sm" (change)="onDrinkPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+      </select>
+    </div>
+  </div>
 
   <h3>Meals</h3>
-  <button *ngIf="admin" (click)="showCreateMealModal()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMealModal">
+  <button *ngIf="admin" (click)="showCreateMealModal()" type="button" class="btn btn-outline-primary btn-sm"
+    data-bs-toggle="modal" data-bs-target="#createMealModal">
     Add
   </button>
-  <button *ngIf="admin" (click)="showCreateCuisineModal()" type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#createCuisineModal">
+  <button *ngIf="admin" (click)="showCreateCuisineModal()" type="button" class="btn btn-outline-secondary btn-sm"
+    data-bs-toggle="modal" data-bs-target="#createCuisineModal">
     Create cuisine
   </button>
   <table>
@@ -70,21 +86,38 @@
       <td>{{ meal.price }} usd</td>
       <td>{{ meal.cuisineName }}</td>
       <td>
-        <button type="button" 
-              class="btn" 
-              [ngClass]="{
-                  'btn-success': !selectedMealNames.includes(meal.name),
-                  'btn-secondary': selectedMealNames.includes(meal.name)
-              }" 
-              (click)="selectMeal(meal.name, meal.price)">
-        {{ selectedMealNames.includes(meal.name) ? 'Selected' : 'Select' }}
-      </button>
+        <button type="button" class="btn" [ngClass]="{
+                  'btn-outline-success': !orderCustom.meals.includes(meal),
+                  'btn-outline-secondary': orderCustom.meals.includes(meal)
+              }" (click)="selectMeal(meal)">
+          {{ orderCustom.meals.includes(meal) ? 'Selected' : 'Select' }}
+        </button>
       </td>
     </tr>
   </table>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <!-- Meals pagination -->
+    <div>
+      <button (click)="onMealPageChange(mealCurrentPage - 1)" class="btn btn-light btn-sm"
+        [disabled]="mealCurrentPage <= 0">Prev</button>
+      <span> {{mealCurrentPage + 1}} / {{mealTotalPages}} </span>
+      <button (click)="onMealPageChange(mealCurrentPage + 1)" class="btn btn-light btn-sm"
+        [disabled]="(mealCurrentPage + 1) * mealPageSize >= mealTotalElements">Next</button>
+    </div>
+
+    <!-- Meals page items count -->
+    <div>
+      <select class="custom-select custom-select-sm" (change)="onMealPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+      </select>
+    </div>
+  </div>
 
   <h3>Desserts</h3>
-  <button *ngIf="admin" (click)="showCreateDessertModal()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDessertModal">
+  <button *ngIf="admin" (click)="showCreateDessertModal()" type="button" class="btn btn-outline-primary btn-sm"
+    data-bs-toggle="modal" data-bs-target="#createDessertModal">
     Add
   </button>
   <table>
@@ -96,18 +129,34 @@
       <td>{{ dessert.name }}</td>
       <td>{{ dessert.price }} usd</td>
       <td>
-        <button type="button" 
-              class="btn" 
-              [ngClass]="{
-                  'btn-success': !selectedDessertNames.includes(dessert.name),
-                  'btn-secondary': selectedDessertNames.includes(dessert.name)
-              }" 
-              (click)="selectDessert(dessert.name, dessert.price)">
-        {{ selectedDessertNames.includes(dessert.name) ? 'Selected' : 'Select' }}
-      </button>
+        <button type="button" class="btn" [ngClass]="{
+                  'btn-outline-success': !orderCustom.desserts.includes(dessert),
+                  'btn-outline-secondary': orderCustom.desserts.includes(dessert)
+              }" (click)="selectDessert(dessert)">
+          {{ orderCustom.desserts.includes(dessert) ? 'Selected' : 'Select' }}
+        </button>
       </td>
     </tr>
   </table>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <!-- Desserts pagination -->
+    <div>
+      <button (click)="onDessertPageChange(dessertCurrentPage - 1)" class="btn btn-light btn-sm"
+        [disabled]="dessertCurrentPage <= 0">Prev</button>
+      <span> {{dessertCurrentPage + 1}} / {{dessertTotalPages}} </span>
+      <button (click)="onDessertPageChange(dessertCurrentPage + 1)" class="btn btn-light btn-sm"
+        [disabled]="(dessertCurrentPage + 1) * dessertPageSize >= dessertTotalElements">Next</button>
+    </div>
+
+    <!-- Desserts page items count -->
+    <div>
+      <select class="custom-select custom-select-sm" (change)="onDessertPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+      </select>
+    </div>
+  </div>
 
   <div style="text-align: right;">
     <h3>Total price: {{orderCustom.totalPrice}} usd</h3>
@@ -118,7 +167,8 @@
 
 <!-- Modals -->
 <!-- Create Drink Modal -->
-<div class="modal fade" id="createDrinkModal" tabindex="-1" role="dialog" aria-labelledby="createDrinkModalLabel" aria-hidden="true">
+<div class="modal fade" id="createDrinkModal" tabindex="-1" role="dialog" aria-labelledby="createDrinkModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -130,15 +180,7 @@
           <!-- Drink Name Field -->
           <div class="mb-3">
             <label for="drink-name" class="form-label">Drink Name:</label>
-            <input
-              type="text"
-              class="form-control"
-              id="drink-name"
-              name="name"
-              ngModel
-              required
-              minlength="4"
-            />
+            <input type="text" class="form-control" id="drink-name" name="name" ngModel required minlength="4" />
             <!-- Error Messages for Drink Name -->
             <div *ngIf="createDrinkForm.submitted || createDrinkForm.controls['name']?.touched">
               <small class="text-danger" *ngIf="createDrinkForm.controls['name']?.errors?.['required']">
@@ -153,15 +195,7 @@
           <!-- Drink Price Field -->
           <div class="mb-3">
             <label for="drink-price" class="form-label">Price (USD):</label>
-            <input
-              type="number"
-              class="form-control"
-              id="drink-price"
-              name="price"
-              ngModel
-              required
-              min="0.0"
-            />
+            <input type="number" class="form-control" id="drink-price" name="price" ngModel required min="0.0" />
             <!-- Error Messages for Drink Price -->
             <div *ngIf="createDrinkForm.submitted || createDrinkForm.controls['price']?.touched">
               <small class="text-danger" *ngIf="createDrinkForm.controls['price']?.errors?.['required']">
@@ -184,7 +218,8 @@
 </div>
 
 <!-- Create Meal Modal -->
-<div class="modal fade" id="createMealModal" tabindex="-1" role="dialog" aria-labelledby="createMealModalLabel" aria-hidden="true">
+<div class="modal fade" id="createMealModal" tabindex="-1" role="dialog" aria-labelledby="createMealModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -196,15 +231,7 @@
           <!-- Meal Name -->
           <div class="mb-3">
             <label for="meal-name" class="form-label">Meal Name:</label>
-            <input
-              type="text"
-              class="form-control"
-              id="meal-name"
-              name="name"
-              ngModel
-              required
-              minlength="4"
-            />
+            <input type="text" class="form-control" id="meal-name" name="name" ngModel required minlength="4" />
             <div *ngIf="createMealForm.submitted || createMealForm.controls['name']?.touched">
               <small class="text-danger" *ngIf="createMealForm.controls['name']?.errors?.['required']">
                 Meal Name is required.
@@ -218,15 +245,7 @@
           <!-- Meal Price -->
           <div class="mb-3">
             <label for="meal-price" class="form-label">Price (USD):</label>
-            <input
-              type="number"
-              class="form-control"
-              id="meal-price"
-              name="price"
-              ngModel
-              required
-              min="0.1"
-            />
+            <input type="number" class="form-control" id="meal-price" name="price" ngModel required min="0.1" />
             <div *ngIf="createMealForm.submitted || createMealForm.controls['price']?.touched">
               <small class="text-danger" *ngIf="createMealForm.controls['price']?.errors?.['required']">
                 Price is required.
@@ -240,15 +259,8 @@
           <!-- Portion Weight -->
           <div class="mb-3">
             <label for="meal-portion-weight" class="form-label">Portion weight (g):</label>
-            <input
-              type="number"
-              class="form-control"
-              id="meal-portion-weight"
-              name="portionWeight"
-              ngModel
-              required
-              min="10"
-            />
+            <input type="number" class="form-control" id="meal-portion-weight" name="portionWeight" ngModel required
+              min="10" />
             <div *ngIf="createMealForm.submitted || createMealForm.controls['portionWeight']?.touched">
               <small class="text-danger" *ngIf="createMealForm.controls['portionWeight']?.errors?.['required']">
                 Portion weight is required.
@@ -262,13 +274,7 @@
           <!-- Cuisine -->
           <div class="mb-3">
             <label for="meal-cuisine" class="form-label">Cuisine:</label>
-            <select
-              class="form-control"
-              id="meal-cuisine"
-              name="cuisineName"
-              [(ngModel)]="selectedCuisine"
-              required
-            >
+            <select class="form-control" id="meal-cuisine" name="cuisineName" [(ngModel)]="selectedCuisine" required>
               <option value="" disabled>Select a cuisine</option>
               <option *ngFor="let cuisine of cuisines" [value]="cuisine.name">
                 {{ cuisine.name }}
@@ -294,7 +300,8 @@
 </div>
 
 <!-- Create Cuisine Modal -->
-<div class="modal fade" id="createCuisineModal" tabindex="-1" role="dialog" aria-labelledby="createCuisineModalLabel" aria-hidden="true">
+<div class="modal fade" id="createCuisineModal" tabindex="-1" role="dialog" aria-labelledby="createCuisineModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -306,15 +313,7 @@
           <!-- Cuisine Name -->
           <div class="mb-3">
             <label for="cuisine-name" class="form-label">Cuisine Name:</label>
-            <input
-              type="text"
-              class="form-control"
-              id="cuisine-name"
-              name="name"
-              ngModel
-              required
-              minlength="4"
-            />
+            <input type="text" class="form-control" id="cuisine-name" name="name" ngModel required minlength="4" />
             <div *ngIf="createCuisineForm.submitted || createCuisineForm.controls['name']?.touched">
               <small class="text-danger" *ngIf="createCuisineForm.controls['name']?.errors?.['required']">
                 Cuisine Name is required.
@@ -338,7 +337,8 @@
 </div>
 
 <!-- Create Dessert Modal -->
-<div class="modal fade" id="createDessertModal" tabindex="-1" role="dialog" aria-labelledby="createDessertModalLabel" aria-hidden="true">
+<div class="modal fade" id="createDessertModal" tabindex="-1" role="dialog" aria-labelledby="createDessertModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -350,15 +350,7 @@
           <!-- Dessert Name -->
           <div class="mb-3">
             <label for="dessert-name" class="form-label">Dessert Name:</label>
-            <input
-              type="text"
-              class="form-control"
-              id="dessert-name"
-              name="name"
-              ngModel
-              required
-              minlength="4"
-            />
+            <input type="text" class="form-control" id="dessert-name" name="name" ngModel required minlength="4" />
             <div *ngIf="createDessertForm.submitted || createDessertForm.controls['name']?.touched">
               <small class="text-danger" *ngIf="createDessertForm.controls['name']?.errors?.['required']">
                 Dessert Name is required.
@@ -372,15 +364,7 @@
           <!-- Dessert Price -->
           <div class="mb-3">
             <label for="dessert-price" class="form-label">Price (USD):</label>
-            <input
-              type="number"
-              class="form-control"
-              id="dessert-price"
-              name="price"
-              ngModel
-              required
-              min="0.1"
-            />
+            <input type="number" class="form-control" id="dessert-price" name="price" ngModel required min="0.1" />
             <div *ngIf="createDessertForm.submitted || createDessertForm.controls['price']?.touched">
               <small class="text-danger" *ngIf="createDessertForm.controls['price']?.errors?.['required']">
                 Price is required.
@@ -394,15 +378,8 @@
           <!-- Dessert Portion Weight -->
           <div class="mb-3">
             <label for="dessert-portion-weight" class="form-label">Portion weight (g):</label>
-            <input
-              type="number"
-              class="form-control"
-              id="dessert-portion-weight"
-              name="portionWeight"
-              ngModel
-              required
-              min="10"
-            />
+            <input type="number" class="form-control" id="dessert-portion-weight" name="portionWeight" ngModel required
+              min="10" />
             <div *ngIf="createDessertForm.submitted || createDessertForm.controls['portionWeight']?.touched">
               <small class="text-danger" *ngIf="createDessertForm.controls['portionWeight']?.errors?.['required']">
                 Portion weight is required.

@@ -29,13 +29,22 @@ export class MenuComponent implements OnInit {
   public admin!: boolean;
 
   public drinks!: Drink[];
-  public selectedDrinkNames: string[] = [];
+  public drinkCurrentPage: number = 0;
+  public drinkPageSize: number = 5;
+  public drinkTotalElements: number = 0;
+  public drinkTotalPages: number = 0;
 
   public desserts!: Dessert[];
-  public selectedDessertNames: string[] = [];
+  public dessertCurrentPage: number = 0;
+  public dessertPageSize: number = 5;
+  public dessertTotalElements: number = 0;
+  public dessertTotalPages: number = 0;
 
   public meals!: Meal[];
-  public selectedMealNames: string[] = [];
+  public mealCurrentPage: number = 0;
+  public mealPageSize: number = 5;
+  public mealTotalElements: number = 0;
+  public mealTotalPages: number = 0;
 
   public popularDishes: PopularDish[] = [];
   public selectedPopularNames: string[] = [];
@@ -60,13 +69,13 @@ export class MenuComponent implements OnInit {
   };
 
   public orderCustom: { 
-    drinkNames: string[], 
-    mealNames: string[], 
-    dessertNames: string[], 
+    drinks: Drink[], 
+    meals: Meal[], 
+    desserts: Dessert[], 
     totalPrice: number} = {
-      drinkNames: [],
-      mealNames: [],
-      dessertNames: [],
+      drinks: [],
+      meals: [],
+      desserts: [],
       totalPrice: 0
   };
 
@@ -83,21 +92,21 @@ export class MenuComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.admin = this.userService.isAdmin();
+
     this.findPopularDishes();
     this.findAllDrinks();
     this.findAllDesserts();
     this.findAllMeals();
 
     this.cuisineService.findAll().subscribe(
-      (response: Cuisine[]) => {
-        this.cuisines = response
+      response => {
+        this.cuisines = response.content;
       },
-      (error) => {
+      error => {
         console.error('Error loading cuisines:', error);
       }
     );
-
-    this.admin = this.userService.isAdmin();
   }
 
   showCreateDrinkModal(): void {
@@ -124,22 +133,22 @@ export class MenuComponent implements OnInit {
     modal.show();
   }
 
-  public selectDrink(drinkName: string, price: number): void {
-    if (this.selectedDrinkNames.includes(drinkName)) {
+  public selectDrink(drink: Drink): void {
+    const isDrinkExistsInOrder = this.orderCustom.drinks.includes(drink);
+      // .some(drink => drink.name === drinkName);
+
+    if (isDrinkExistsInOrder) {
       // Deselect the drink
-      this.selectedDrinkNames.splice(this.selectedDrinkNames.indexOf(drinkName), 1);
-      this.orderCustom.drinkNames.splice(this.orderCustom.drinkNames.indexOf(drinkName), 1);
-      
-      if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
-        this.orderCustom.totalPrice -= price;
+      this.orderCustom.drinks = this.orderCustom.drinks
+        .filter(d => d !== drink);
+
+      if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= drink.price) {
+        this.orderCustom.totalPrice -= drink.price;
       }
     } else {
       // Select a new drink
-      this.selectedDrinkNames.push(drinkName);
-      if (!this.orderCustom.drinkNames.includes(drinkName)) {
-        this.orderCustom.drinkNames.push(drinkName);
-        this.orderCustom.totalPrice += price;
-      }
+      this.orderCustom.drinks.push(drink);
+      this.orderCustom.totalPrice += drink.price;
     }
     console.log('Current custom Order:', this.orderCustom);
   }
@@ -148,11 +157,13 @@ export class MenuComponent implements OnInit {
     // Deselect the dish from popular
     if (this.selectedPopularNames.includes(popularName)) {
       this.mealService.getByName(popularName).subscribe(
-        (_response: Meal) => {
-          this.orderCustom.mealNames.splice(this.orderCustom.mealNames.indexOf(popularName), 1);
+        () => {
+          this.orderCustom.meals = this.orderCustom.meals
+          .filter(meal => meal.name !== popularName);
         },
         (_error) => {
-          this.orderCustom.dessertNames.splice(this.orderCustom.dessertNames.indexOf(popularName), 1);
+          this.orderCustom.desserts = this.orderCustom.desserts
+          .filter(dessert => dessert.name !== popularName);
         });
       
       this.selectedPopularNames.splice(this.selectedPopularNames.indexOf(popularName), 1);
@@ -162,11 +173,15 @@ export class MenuComponent implements OnInit {
     // Select a new popular
     } else {
       this.mealService.getByName(popularName).subscribe(
-        (_response: Meal) => {
-          this.orderCustom.mealNames.push(popularName);
+        (meal: Meal) => {
+          this.orderCustom.meals.push(meal);
         },
         (_error) => {
-          this.orderCustom.dessertNames.push(popularName);
+          this.dessertService.getByName(popularName).subscribe(
+            (dessert: Dessert) => {
+              this.orderCustom.desserts.push(dessert);
+            }
+          )
         });
       this.selectedPopularNames.push(popularName);
       this.orderCustom.totalPrice += price;
@@ -174,55 +189,51 @@ export class MenuComponent implements OnInit {
     console.log('Current custom Order:', this.orderCustom);
   }
 
-  public selectMeal(mealName: string, price: number): void {
-    // Deselect the meal
-    if (this.selectedMealNames.includes(mealName)) {
+  public selectMeal(meal: Meal): void {
+    const isMealExistsInOrder = this.orderCustom.meals.includes(meal);
 
-      this.orderCustom.mealNames.splice(this.orderCustom.mealNames.indexOf(mealName), 1);
-      this.selectedMealNames.splice(this.selectedMealNames.indexOf(mealName), 1);
+    if (isMealExistsInOrder) {
+      // Deselect the meal
+      this.orderCustom.meals = this.orderCustom.meals
+        .filter(m => m !== meal);
 
-      if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
-        this.orderCustom.totalPrice -= price;
+      if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= meal.price) {
+        this.orderCustom.totalPrice -= meal.price;
       }
-    // Select a new meal
     } else {
-      this.selectedMealNames.push(mealName);
-      if (!this.orderCustom.mealNames.includes(mealName)) {
-        this.orderCustom.mealNames.push(mealName);
-        this.orderCustom.totalPrice += price;
-      }
+      // Select a new meal
+      this.orderCustom.meals.push(meal);
+      this.orderCustom.totalPrice += meal.price;
     }
     console.log('Current custom Order:', this.orderCustom);
   }
 
-  public selectDessert(dessertName: string, price: number): void {
-    // Deselect the dessert
-    if (this.selectedDessertNames.includes(dessertName)) {
+  public selectDessert(dessert: Dessert): void {
+    const isDessertExistsInOrder = this.orderCustom.desserts.includes(dessert);
 
-      this.orderCustom.dessertNames.splice(this.orderCustom.dessertNames.indexOf(dessertName), 1);
-      this.selectedDessertNames.splice(this.selectedDessertNames.indexOf(dessertName), 1);
+    if (isDessertExistsInOrder) {
+      // Deselect the dessert
+      this.orderCustom.desserts = this.orderCustom.desserts
+        .filter(dsrt => dsrt !== dessert);
 
-      if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= price) {
-        this.orderCustom.totalPrice -= price;
+      if (this.orderCustom.totalPrice != null && this.orderCustom.totalPrice >= dessert.price) {
+        this.orderCustom.totalPrice -= dessert.price;
       }
-    // Select a new dessert
     } else {
-      this.selectedDessertNames.push(dessertName);
-      if (!this.orderCustom.dessertNames.includes(dessertName)) {
-        this.orderCustom.dessertNames.push(dessertName);
-        this.orderCustom.totalPrice += price;
-      }
+      // Select a new dessert
+      this.orderCustom.desserts.push(dessert);
+      this.orderCustom.totalPrice += dessert.price;
     }
     console.log('Current custom Order:', this.orderCustom);
   }
 
   public submitOrder(): void {
     console.log('Order submitted:', this.orderCustom);
-    this.order.drinkNames = this.orderCustom.drinkNames;
+    this.order.drinks = this.orderCustom.drinks;
     this.order.iceCubes = true;
     this.order.lemon = true;
-    this.order.mealNames = this.orderCustom.mealNames;
-    this.order.dessertNames = this.orderCustom.dessertNames;
+    this.order.meals = this.orderCustom.meals;
+    this.order.desserts = this.orderCustom.desserts;
     this.order.totalPrice = parseFloat(this.orderCustom.totalPrice.toFixed(2)) * 100; // in cents
 
     this.orderService.create(this.order).subscribe(
@@ -286,9 +297,11 @@ export class MenuComponent implements OnInit {
   }
 
   public findAllDrinks(): void {
-    this.drinkService.findAll().subscribe( 
-      (response: Drink[]) => {
-        this.drinks = response;
+    this.drinkService.findAll(this.drinkCurrentPage, this.drinkPageSize).subscribe( 
+      response => {
+        this.drinks = response.content;
+        this.drinkTotalElements = response.totalElements;
+        this.drinkTotalPages = response.totalPages;
         console.log('drinks: ', response);
       },
       error => {
@@ -297,12 +310,23 @@ export class MenuComponent implements OnInit {
     );
   }
 
+  public onDrinkPageChange(page: number): void {
+    this.drinkCurrentPage = page;
+    this.findAllDrinks();
+  }
+
+  public onDrinkPageSizeChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    this.drinkPageSize = parseInt(selectElement.value, 10);
+    this.findAllDrinks();
+  }
+
   public findAllDesserts(): void {
-    this.dessertService.findAll().subscribe( 
-      (response: Dessert[]) => {
-        this.desserts = response.map(dessert => {
-          return dessert;
-        });
+    this.dessertService.findAll(this.dessertCurrentPage, this.dessertPageSize).subscribe( 
+      response => {
+        this.desserts = response.content;
+        this.dessertTotalElements = response.totalElements;
+        this.dessertTotalPages = response.totalPages;
         console.log('desserts: ', response);
       },
       error => {
@@ -311,26 +335,39 @@ export class MenuComponent implements OnInit {
     );
   }
 
+  public onDessertPageChange(page: number): void {
+    this.dessertCurrentPage = page;
+    this.findAllDesserts();
+  }
+
+  public onDessertPageSizeChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    this.dessertPageSize = parseInt(selectElement.value, 10);
+    this.findAllDesserts();
+  }
+
   public findAllMeals(): void {
-    this.mealService.findAll().subscribe( 
-      (response: Meal[]) => {
-        this.meals = response.map(meal => {
-          this.cuisineService.getById(meal.cuisineId).subscribe(
-            (cuisine: Cuisine) => {
-              meal.cuisineName = cuisine.name;
-            },
-            (error) => {
-              console.error("Error fetching cuisine:", error);
-              meal.cuisineName = "Unknown";
-            }
-          );
-          return meal;
-        });
+    this.mealService.findAll(this.mealCurrentPage, this.mealPageSize).subscribe( 
+      response => {
+        this.meals = response.content;
+        this.mealTotalElements = response.totalElements;
+        this.mealTotalPages = response.totalPages;
       },
       error => {
         alert(error.message);
       } 
     );
+  }
+
+  public onMealPageChange(page: number): void {
+    this.mealCurrentPage = page;
+    this.findAllMeals();
+  }
+
+  public onMealPageSizeChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    this.mealPageSize = parseInt(selectElement.value, 10);
+    this.findAllMeals();
   }
 
   public onCreateMeal(createMealForm: NgForm): void {

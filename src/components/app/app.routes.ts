@@ -10,51 +10,51 @@ import { SafePipe } from '../report/pipes/safe.pipe';
 import { JwtInterceptor } from '../login/jwt-interceptor';
 
 export const routes: Routes = [
-    { 
-      path: 'login', 
-      loadComponent: () => import('../login/login.component').then(m => m.LoginComponent) 
-    },
-    { 
-      path: 'auth-callback', 
-      loadComponent: () => import('../navbar/navbar.component').then(m => m.NavbarComponent) 
-    },
-    { 
-      path: 'menu', 
-      loadComponent: () => import('../menu/menu.component').then(m => m.MenuComponent),
-      canActivate: [AuthGuard]
-    },
-    { 
-      path: 'payment-success', 
-      component: PaymentSuccessComponent 
-    },
-    { 
-      path: 'history', 
-      loadComponent: () => import('../history/history.component').then(m => m.HistoryComponent),
-      canActivate: [AuthGuard]
-    },
-    { 
-      path: 'report', 
-      loadComponent: () => import('../report/report.component').then(m => m.ReportComponent),
-      canActivate: [AuthGuard]
-    },
-    { 
-      path: 'payment/:id', 
-      loadComponent: () => import('../payment/payment.component').then(m => m.PaymentComponent),
-      canActivate: [AuthGuard]
-    },
-    { 
-      path: '', 
-      redirectTo: 'menu', 
-      pathMatch: 'full' 
-    },
-    { 
-      path: '404', 
-      component: NotFoundComponent 
-    },
-    { 
-      path: '**', 
-      redirectTo: "/404" 
-    } 
+  {
+    path: 'login',
+    loadComponent: () => import('../login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'auth-callback',
+    loadComponent: () => import('../navbar/navbar.component').then(m => m.NavbarComponent)
+  },
+  {
+    path: 'menu',
+    loadComponent: () => import('../menu/menu.component').then(m => m.MenuComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'payment-success',
+    component: PaymentSuccessComponent
+  },
+  {
+    path: 'history',
+    loadComponent: () => import('../history/history.component').then(m => m.HistoryComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'report',
+    loadComponent: () => import('../report/report.component').then(m => m.ReportComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'payment/:id',
+    loadComponent: () => import('../payment/payment.component').then(m => m.PaymentComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: '',
+    redirectTo: 'menu',
+    pathMatch: 'full'
+  },
+  {
+    path: '404',
+    component: NotFoundComponent
+  },
+  {
+    path: '**',
+    redirectTo: "/404"
+  }
 ];
 
 @NgModule({

@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: fos-angular-image
+    container_name: fos-angular
+    ports:
+      - 4200:4200
+    command: ["ng", "serve", "--host", "0.0.0.0"]
+    volumes:
+      - ./:/project
+      - /project/node_modules
+    networks:
+      - fos-network
+
+networks:
+  fos-network:
+    name: fos-network

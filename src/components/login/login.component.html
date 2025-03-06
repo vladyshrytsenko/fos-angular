@@ -11,43 +11,102 @@
             </div>
             <div class="col-md-6 col-lg-7 d-flex align-items-center">
               <div class="card-body p-4 p-lg-5 text-black">
-
-                <button (click)="onAuthenticate()">Sign In</button>
-                <!-- <form #loginForm="ngForm" (ngSubmit)="onAuthenticate(loginForm)">
-
-                  <div class="d-flex align-items-center mb-3 pb-1">
-                    <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
-                    <span class="h1 fw-bold mb-0">Food ordering system</span>
-                  </div>
-
-                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
-
+                <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
+                  <!-- Username -->
                   <div class="form-group">
-                    <label class="form-label" for="login-email">Email address</label>
-                    <input type="email" id="login-email" ngModel name="email" class="form-control form-control-lg" />
+                    <label for="reg-username" class="col-form-label">Username:</label>
+                    <input
+                      type="text"
+                      ngModel
+                      name="username"
+                      class="form-control"
+                      id="reg-username"
+                      required
+                      minlength="6"
+                    />
+                    <div *ngIf="registerForm.submitted || registerForm.controls['username']?.touched">
+                      <small class="text-danger" *ngIf="registerForm.controls['username']?.errors?.['required']">
+                        Username is required.
+                      </small>
+                      <small class="text-danger" *ngIf="registerForm.controls['username']?.errors?.['minlength']">
+                        Username must be at least 6 characters long.
+                      </small>
+                    </div>
                   </div>
-
+        
+                  <!-- Email -->
                   <div class="form-group">
-                    <label class="form-label" for="login-password">Password</label>
-                    <input type="password" id="login-password" ngModel name="password" class="form-control form-control-lg" />
+                    <label for="reg-email" class="col-form-label">Email:</label>
+                    <input
+                      type="email"
+                      ngModel
+                      name="email"
+                      class="form-control"
+                      id="reg-email"
+                      required
+                      email
+                    />
+                    <div *ngIf="registerForm.submitted || registerForm.controls['email']?.touched">
+                      <small class="text-danger" *ngIf="registerForm.controls['email']?.errors?.['required']">
+                        Email is required.
+                      </small>
+                      <small class="text-danger" *ngIf="registerForm.controls['email']?.errors?.['email']">
+                        Please enter a valid email address.
+                      </small>
+                    </div>
                   </div>
-
-                  <div class="pt-1 mb-4">
-                    <button [disabled]="loginForm.invalid" id="login_button" type="submit" class="btn btn-success">Sign in</button>
+        
+                  <!-- Password -->
+                  <div class="form-group">
+                    <label for="reg-password" class="col-form-label">Password:</label>
+                    <input
+                      type="password"
+                      ngModel
+                      name="password"
+                      class="form-control"
+                      id="reg-password"
+                      required
+                      minlength="6"
+                    />
+                    <div *ngIf="registerForm.submitted || registerForm.controls['password']?.touched">
+                      <small class="text-danger" *ngIf="registerForm.controls['password']?.errors?.['required']">
+                        Password is required.
+                      </small>
+                      <small class="text-danger" *ngIf="registerForm.controls['password']?.errors?.['minlength']">
+                        Password must be at least 6 characters long.
+                      </small>
+                    </div>
                   </div>
-
-                </form> -->
-
-                <div class="text-center">or</div>
-
-                <button (click)="loginWithOAuth2()" class="btn btn-primary">Login with OAuth2</button>
-
-                <a class="small text-muted" href="#!">Forgot password?</a>
-                  <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? 
-                    <button class="btn btn-success btn-lg btn-block" type="button" data-toggle="modal" data-target="#registerModal">Sign up</button>
-                  </p>
-
-              </div>
+        
+                  <!-- Confirm Password -->
+                  <div class="form-group">
+                    <label for="reg-confirm-password" class="col-form-label">Confirm password:</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="reg-confirm-password"
+                      [(ngModel)]="confirmPassword"
+                      name="confirmPassword"
+                      required
+                    />
+                    <div *ngIf="registerForm.submitted || registerForm.controls['confirmPassword']?.touched">
+                      <small class="text-danger" *ngIf="confirmPassword !== registerForm.controls['password']?.value">
+                        Passwords do not match.
+                      </small>
+                    </div>
+                  </div>
+        
+                  <!-- Submit Button -->
+                  <div class="modal-footer">
+                    <button [disabled]="registerForm.invalid" id="register_button" type="submit" class="btn btn-primary">
+                      Register
+                    </button>
+                  </div>
+                </form>
+                <br>
+                <p class="mb-5 pb-lg-2" style="color: #393f81;">Already have an account? 
+                  <button (click)="onAuthenticate()" class="btn btn-primary">Sign In</button>
+                </p>
             </div>
           </div>
         </div>
@@ -55,114 +114,6 @@
     </div>
   </div>
 
-<!-- Register Modal -->
-<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-
-      <div class="modal-body">
-        <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
-          <!-- Username -->
-          <div class="form-group">
-            <label for="reg-username" class="col-form-label">Username:</label>
-            <input
-              type="text"
-              ngModel
-              name="username"
-              class="form-control"
-              id="reg-username"
-              required
-              minlength="6"
-            />
-            <div *ngIf="registerForm.submitted || registerForm.controls['username']?.touched">
-              <small class="text-danger" *ngIf="registerForm.controls['username']?.errors?.['required']">
-                Username is required.
-              </small>
-              <small class="text-danger" *ngIf="registerForm.controls['username']?.errors?.['minlength']">
-                Username must be at least 6 characters long.
-              </small>
-            </div>
-          </div>
-
-          <!-- Email -->
-          <div class="form-group">
-            <label for="reg-email" class="col-form-label">Email:</label>
-            <input
-              type="email"
-              ngModel
-              name="email"
-              class="form-control"
-              id="reg-email"
-              required
-              email
-            />
-            <div *ngIf="registerForm.submitted || registerForm.controls['email']?.touched">
-              <small class="text-danger" *ngIf="registerForm.controls['email']?.errors?.['required']">
-                Email is required.
-              </small>
-              <small class="text-danger" *ngIf="registerForm.controls['email']?.errors?.['email']">
-                Please enter a valid email address.
-              </small>
-            </div>
-          </div>
-
-          <!-- Password -->
-          <div class="form-group">
-            <label for="reg-password" class="col-form-label">Password:</label>
-            <input
-              type="password"
-              ngModel
-              name="password"
-              class="form-control"
-              id="reg-password"
-              required
-              minlength="6"
-            />
-            <div *ngIf="registerForm.submitted || registerForm.controls['password']?.touched">
-              <small class="text-danger" *ngIf="registerForm.controls['password']?.errors?.['required']">
-                Password is required.
-              </small>
-              <small class="text-danger" *ngIf="registerForm.controls['password']?.errors?.['minlength']">
-                Password must be at least 6 characters long.
-              </small>
-            </div>
-          </div>
-
-          <!-- Confirm Password -->
-          <div class="form-group">
-            <label for="reg-confirm-password" class="col-form-label">Confirm password:</label>
-            <input
-              type="password"
-              class="form-control"
-              id="reg-confirm-password"
-              [(ngModel)]="confirmPassword"
-              name="confirmPassword"
-              required
-            />
-            <div *ngIf="registerForm.submitted || registerForm.controls['confirmPassword']?.touched">
-              <small class="text-danger" *ngIf="confirmPassword !== registerForm.controls['password']?.value">
-                Passwords do not match.
-              </small>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="modal-footer">
-            <button [disabled]="registerForm.invalid" id="register_button" type="submit" class="btn btn-primary">
-              Register
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Bootstrap Bundle with Popper (for modal functionality) -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js"></script>
-
-</section>
 </div>

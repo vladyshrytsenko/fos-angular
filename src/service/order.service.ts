@@ -6,52 +6,57 @@ import { Order } from "../model/order";
 import { StorageService } from "./storage.service";
 
 @Injectable({
-    providedIn: 'root'
-  })
-  export class OrderService {
-  
-    constructor(
-      private http: HttpClient,
-      private storageService: StorageService
-    ) { }
-  
-    public getById(id: number) : Observable<Order> {
-      const token = this.storageService.getJwtToken();
-      
-      return this.http.get<Order>(`${environment.gatewayUrl}/api/core/orders/${id}`, { 
-        headers: new HttpHeaders({
-          'Authorization': `Bearer ${token}`
-        })
-      });
-    } 
+  providedIn: 'root'
+})
+export class OrderService {
 
-    public findAll() : Observable<Order[]> {
-      const token = this.storageService.getJwtToken();
+  constructor(
+    private http: HttpClient,
+    private storageService: StorageService
+  ) { }
 
-      return this.http.get<Order[]>(`${environment.gatewayUrl}/api/core/orders`, { 
-        headers: new HttpHeaders({
-          'Authorization': `Bearer ${token}`
-        })
-      });
-    } 
-  
-    public create(order: Order) : Observable<Order> {
-      const token = this.storageService.getJwtToken();
+  public getById(id: number): Observable<Order> {
+    const token = this.storageService.getJwtToken();
 
-      return this.http.post<Order>(`${environment.gatewayUrl}/api/core/orders`, order, { 
-        headers: new HttpHeaders({
-          'Authorization': `Bearer ${token}`
-        })
-      });
-    }
-  
-    public deleteById(id: number) : Observable<void> {
-      const token = this.storageService.getJwtToken();
-
-      return this.http.delete<void>(`${environment.gatewayUrl}/api/core/orders/${id}`, { 
-        headers: new HttpHeaders({
-          'Authorization': `Bearer ${token}`
-        })
-      });
-    } 
+    return this.http.get<Order>(`${environment.gatewayUrl}/api/core/orders/${id}`, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
   }
+
+  public findAll(page: number = 0, size: number = 10): Observable<any> {
+    const token = this.storageService.getJwtToken();
+
+    return this.http.get<any>(`${environment.gatewayUrl}/api/core/orders`, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      }),
+      params: {
+        page: page,
+        size: size,
+        sort: 'id,desc'
+      }
+    });
+  }
+
+  public create(order: Order): Observable<Order> {
+    const token = this.storageService.getJwtToken();
+
+    return this.http.post<Order>(`${environment.gatewayUrl}/api/core/orders`, order, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+  }
+
+  public deleteById(id: number): Observable<void> {
+    const token = this.storageService.getJwtToken();
+
+    return this.http.delete<void>(`${environment.gatewayUrl}/api/core/orders/${id}`, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+  }
+}

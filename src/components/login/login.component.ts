@@ -22,8 +22,8 @@ export class LoginComponent {
   confirmPassword: string = '';
 
   private clientId = 'qwerty123qwerty123';
-  private authServerUrl = 'http://localhost:9000/oauth2/authorize';
-  private tokenUrl = 'http://localhost:9000/oauth2/token';
+  private authServerUrl = 'http://localhost:8085/oauth2/authorize';
+  private tokenUrl = 'http://localhost:8085/oauth2/token';
   private redirectUri = 'http://localhost:4200/';
 
   constructor(
@@ -35,6 +35,7 @@ export class LoginComponent {
     private authService: AuthService
   ) {}
 
+  /** Login via Spring Authorization Server */
   public onAuthenticate(): void {
     this.authService.login();
   }
@@ -57,13 +58,12 @@ export class LoginComponent {
     }
   }
 
-  /** Login via Spring Authorization Server */
-  public loginWithOAuth2(): void {
-    const authorizationUrl = `${this.authServerUrl}?response_type=code&client_id=${this.clientId}&redirect_uri=${this.redirectUri}&scope=openid profile`;
-    window.location.href = authorizationUrl;
-  }
+  // public loginWithOAuth2(): void {
+  //   const authorizationUrl = `${this.authServerUrl}?response_type=code&client_id=${this.clientId}&redirect_uri=${this.redirectUri}&scope=openid profile`;
+  //   window.location.href = authorizationUrl;
+  // }
 
-  redirectToAuthServer() {
-    window.location.href = `${this.authServerUrl}?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}`;
-  }
+  // redirectToAuthServer() {
+  //   window.location.href = `${this.authServerUrl}?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}`;
+  // }
 }

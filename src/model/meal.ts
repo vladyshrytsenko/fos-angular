@@ -9,6 +9,5 @@ export interface Meal {
     price: number;
     portionWeight: number;
     number: number;
-    cuisineId: number;
     cuisineName: string;
 }

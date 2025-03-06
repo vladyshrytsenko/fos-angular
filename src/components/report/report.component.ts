@@ -11,13 +11,13 @@ import { CommonModule } from '@angular/common';
   styleUrl: './report.component.css'
 })
 export class ReportComponent {
-  
+
   pdfUrl: SafeResourceUrl | null = null;
 
   constructor(
     private reportService: ReportService,
     private sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   generateReport() {
     this.reportService.generateReport().subscribe(

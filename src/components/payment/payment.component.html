@@ -1,12 +1,14 @@
-<form id="payment-form">  
-  <div id="payment-element">
-    <!-- Stripe.js injects the Payment Element -->
-  </div>
-  
-  <button id="submit" [disabled]="loading" (click)="submitPayment($event)">
-    <div class="spinner" *ngIf="loading" id="spinner"></div>
-    <span id="button-text">{{ loading ? 'Processing...' : 'Pay now' }}</span>
-  </button>
-  
-  <div id="payment-message" *ngIf="message" class="payment-message">{{ message }}</div>
-</form>
+<div class="d-flex justify-content-center">
+  <form id="payment-form">
+    <div id="payment-element">
+      <!-- Stripe.js injects the Payment Element -->
+    </div>
+
+    <button id="submit" [disabled]="loading" (click)="submitPayment($event)">
+      <div class="spinner" *ngIf="loading" id="spinner"></div>
+      <span id="button-text">{{ loading ? 'Processing...' : 'Pay now' }}</span>
+    </button>
+
+    <div id="payment-message" *ngIf="message" class="payment-message">{{ message }}</div>
+  </form>
+</div>

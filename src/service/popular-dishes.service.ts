@@ -5,22 +5,22 @@ import { environment } from "../environments/environment";
 import { StorageService } from "./storage.service";
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class PopularDishesService {
-  
-    constructor(
-      private http: HttpClient,
-      private storageService: StorageService
-    ) { }
 
-    public findAll() : Observable<Map<string, string[]>> {
-      const token = this.storageService.getJwtToken();
+  constructor(
+    private http: HttpClient,
+    private storageService: StorageService
+  ) { }
 
-      return this.http.get<Map<string, string[]>>(`${environment.gatewayUrl}/api/core/popular`, { 
-        headers: new HttpHeaders({
-          'Authorization': `Bearer ${token}`
-        })
-      });
-    }
+  public findAll(): Observable<Map<string, string[]>> {
+    const token = this.storageService.getJwtToken();
+
+    return this.http.get<Map<string, string[]>>(`${environment.gatewayUrl}/api/core/popular`, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+  }
 }

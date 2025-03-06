@@ -19,11 +19,11 @@ export class PaymentComponent implements OnInit {
   loading = false;
   message: string | null = null;
   totalPrice: number = 0;
-  
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private storageService: StorageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadStripeAndInitialize();
@@ -42,11 +42,11 @@ export class PaymentComponent implements OnInit {
         return;
       }
       this.stripe = stripe;
-  
+
       const { clientSecret } = await this.fetchPaymentIntent();
       const appearance = { theme: 'stripe' };
       this.elements = this.stripe.elements({ clientSecret, appearance });
-  
+
       if (!this.paymentElement) {
         this.paymentElement = this.elements.create('payment');
         this.paymentElement.mount('#payment-element');
@@ -56,7 +56,7 @@ export class PaymentComponent implements OnInit {
       console.error('Error initializing Stripe:', error);
     }
   }
-  
+
 
   async loadStripe(publishableKey: string): Promise<any> {
     return new Promise((resolve) => {
@@ -66,7 +66,7 @@ export class PaymentComponent implements OnInit {
         const script = document.createElement('script');
         script.src = 'https://js.stripe.com/v3/';
         script.async = true;
-  
+
         script.onload = () => {
           const stripe = window['Stripe'] as any;
           if (stripe) {
@@ -76,25 +76,25 @@ export class PaymentComponent implements OnInit {
             resolve(null);
           }
         };
-  
+
         script.onerror = () => {
           console.error('Failed to load Stripe.js');
           resolve(null);
         };
-  
+
         document.body.appendChild(script);
       }
     });
   }
-  
+
 
   async fetchPaymentIntent() {
     const token = this.storageService.getJwtToken();
 
     const response = await fetch(`${environment.gatewayUrl}/api/core/payments/create-payment-intent`, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json', 
+      headers: {
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ amount: this.totalPrice, currency: 'usd' })
@@ -105,10 +105,10 @@ export class PaymentComponent implements OnInit {
 
   async submitPayment(event: Event) {
     event.preventDefault();
-  
+
     console.log('Entry point submitPayment()');
     this.loading = true;
-  
+
     try {
       const { error } = await this.stripe.confirmPayment({
         elements: this.elements,
@@ -116,7 +116,7 @@ export class PaymentComponent implements OnInit {
           return_url: `${window.location.origin}/payment-success`,
         },
       });
-  
+
       if (error) {
         console.error('Payment failed:', error.message);
         this.message = error.message;
@@ -129,5 +129,5 @@ export class PaymentComponent implements OnInit {
       this.loading = false;
     }
   }
-  
+
 }

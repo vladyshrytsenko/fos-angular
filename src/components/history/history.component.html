@@ -1,37 +1,88 @@
-<div class="container mt-4">
-    <h2 class="mb-4">Order History</h2>
-      <div class="card mb-3" *ngFor="let order of orders">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <span>Order #{{ order.id }}</span>
-          <p class="card-text">
-            <small class="text-muted">Created At: {{ order.createdAt }}</small>
-          </p>
-        </div>
-        <div class="card-body">
-          <p class="card-text">
-            <strong>Meal:</strong> {{ order.mealNames }} ({{ getMealTotalPrice(order) }}$)
-          </p>
-          <p class="card-text">
-            <strong>Dessert:</strong> {{ order.dessertNames }} ({{ getDessertTotalPrice(order) }}$)
-          </p>
-          <p class="card-text">
-            <strong>Drink:</strong> {{ order.drinkNames }} ({{ getDrinkTotalPrice(order) }}$)
-            <span *ngIf="order.iceCubes" class="badge bg-primary ms-2">Ice</span>
-            <span *ngIf="order.lemon" class="badge bg-warning text-dark ms-2">Lemon</span>
-          </p>
-          <hr>
-          <p class="card-text">
-            <strong>Total Price:</strong> ${{getTotalPrice(order)}}
-          </p>
-          <label for="subscription">Subscription:</label>
-          <select id="subscription" #subscriptionSelect ngModel name="selectedSubscription" 
-            (change)="onSubscriptionChange(order.id, subscriptionSelect.value)">
-            <option *ngFor="let option of subscriptionOptions" [value]="option"> {{ option }} </option>
-          </select>
-        </div>
-      </div>
-    <ng-template #noOrders>
-      <p class="text-center">History is empty.</p>
-    </ng-template>
+<div class="container mt-4 col-lg-6">
+  <h2 class="mb-4">Order History</h2>
+
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <nav aria-label="Page navigation">
+      <ul class="pagination pagination-sm justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 0">
+          <a class="page-link" (click)="onChangePage(currentPage - 1)">Prev</a>
+        </li>
+
+        <li *ngFor="let page of pagesArray" class="page-item" [class.active]="page === currentPage">
+          <a class="page-link" (click)="onChangePage(page)">{{ page + 1 }}</a>
+        </li>
+
+        <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+          <a class="page-link" (click)="onChangePage(currentPage + 1)">Next</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div>
+      <select class="custom-select custom-select-sm" (change)="onPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+      </select>
+    </div>
   </div>
-  
+
+  <div class="card mb-3" *ngFor="let order of orders">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span>Order #{{ order.id }}</span>
+      <p class="card-text">
+        <small class="text-muted">Created At: {{ order.createdAt }}</small>
+      </p>
+    </div>
+    <div class="card-body">
+      <p class="card-text">
+        <strong>Meals:</strong> {{ order.mealNames }} ({{ getMealTotalPrice(order) }}$)
+      </p>
+      <p class="card-text">
+        <strong>Desserts:</strong> {{ order.dessertNames }} ({{ getDessertTotalPrice(order) }}$)
+      </p>
+      <p class="card-text">
+        <strong>Drinks:</strong> {{ order.drinkNames }} ({{ getDrinkTotalPrice(order) }}$)
+        <span *ngIf="order.iceCubes" class="badge bg-primary ms-2">Ice</span>
+        <span *ngIf="order.lemon" class="badge bg-warning text-dark ms-2">Lemon</span>
+      </p>
+      <hr>
+      <p class="card-text">
+        <strong>Total Price:</strong> ${{getTotalPrice(order)}}
+      </p>
+      <label for="subscription">Subscription:</label>
+      <select id="subscription" #subscriptionSelect ngModel name="selectedSubscription"
+        (change)="onSubscriptionChange(order.id, subscriptionSelect.value)">
+        <option *ngFor="let option of subscriptionOptions" [value]="option"> {{ option }} </option>
+      </select>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <nav aria-label="Page navigation">
+      <ul class="pagination pagination-sm justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 0">
+          <a class="page-link" (click)="onChangePage(currentPage - 1)">Prev</a>
+        </li>
+
+        <li *ngFor="let page of pagesArray" class="page-item" [class.active]="page === currentPage">
+          <a class="page-link" (click)="onChangePage(page)">{{ page + 1 }}</a>
+        </li>
+
+        <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+          <a class="page-link" (click)="onChangePage(currentPage + 1)">Next</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div>
+      <select class="custom-select custom-select-sm" (change)="onPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+      </select>
+    </div>
+  </div>
+  <ng-template #noOrders>
+    <p class="text-center">History is empty.</p>
+  </ng-template>
+</div>

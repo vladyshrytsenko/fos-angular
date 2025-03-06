@@ -12,79 +12,79 @@ import { OAuthService } from 'angular-oauth2-oidc';
 export class UserService {
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private storageService: StorageService,
     private oauthService: OAuthService
   ) { }
 
-  public getUserById(id: number) : Observable<User> {
+  public getUserById(id: number): Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/${id}`, { 
-      headers: new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      })
-    });
-  } 
-
-  public getByUsername(username: string) : Observable<User> {
-    const token = this.storageService.getJwtToken();
-
-    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/username/${username}`, { 
-      headers: new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      })
-    });
-  } 
-
-  public getByEmail(email: string) : Observable<User> {
-    const token = this.storageService.getJwtToken();
-
-    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/email/${email}`, { 
+    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/${id}`, {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
     });
   }
 
-  public getByRole(role: string) : Observable<User> {
+  public getByUsername(username: string): Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/role/${role}`, { 
+    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/username/${username}`, {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
     });
-  } 
+  }
 
-  public findAll() : Observable<User[]> {
+  public getByEmail(email: string): Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.get<User[]>(`${environment.gatewayUrl}/api/auth/users`, { 
+    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/email/${email}`, {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
     });
-  } 
+  }
+
+  public getByRole(role: string): Observable<User> {
+    const token = this.storageService.getJwtToken();
+
+    return this.http.get<User>(`${environment.gatewayUrl}/api/auth/users/role/${role}`, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+  }
+
+  public findAll(): Observable<User[]> {
+    const token = this.storageService.getJwtToken();
+
+    return this.http.get<User[]>(`${environment.gatewayUrl}/api/auth/users`, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+    });
+  }
 
   public register(user: User): Observable<any> {
     return this.http.post<any>(`${environment.gatewayUrl}/api/auth/users/auth/register`, user);
   }
 
-  public updateUser(id: number, user: User) : Observable<User> {
+  public updateUser(id: number, user: User): Observable<User> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.put<User>(`${environment.gatewayUrl}/api/auth/users/${id}`, user, { 
+    return this.http.put<User>(`${environment.gatewayUrl}/api/auth/users/${id}`, user, {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
     });
-  } 
+  }
 
-  public deleteUserById(id: number) : Observable<void> {
+  public deleteUserById(id: number): Observable<void> {
     const token = this.storageService.getJwtToken();
 
-    return this.http.delete<void>(`${environment.gatewayUrl}/api/auth/users/${id}`, { 
+    return this.http.delete<void>(`${environment.gatewayUrl}/api/auth/users/${id}`, {
       headers: new HttpHeaders({
         'Authorization': `Bearer ${token}`
       })
@@ -93,16 +93,16 @@ export class UserService {
 
   public isAdmin(): boolean {
     const token = this.storageService.getJwtToken()!;
-  
-      if (token != null) {
-        const payload = this.decodeToken(token);
-        if (payload || payload.role) {
-          if (payload.role === 'ADMIN') {
-            return true;
-          }
+
+    if (token != null) {
+      const payload = this.decodeToken(token);
+      if (payload || payload.role) {
+        if (payload.role === 'ADMIN') {
+          return true;
         }
       }
-      return false;
+    }
+    return false;
   }
 
   public getCurrentUser(): Observable<User> {

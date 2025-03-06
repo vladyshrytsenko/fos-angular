@@ -2,75 +2,76 @@
 @import 'https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
 
 body {
-    font-family: Arial, sans-serif;
-  }
+  font-family: Arial, sans-serif;
+}
 
-  .menu {
-    width: 80%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-  }
+.menu {
+  width: 80%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
 
-  .menu h2 {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
+.menu h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
 
-  .menu h3 {
-    font-size: 20px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    color: #333;
-  }
+.menu h3 {
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
 
-  th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
 
-  th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-  }
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
 
-  .name-column {
-    width: 50%;
-  }
-  
-  .price-column {
-    width: 25%;
-  }
+.name-column {
+  width: 50%;
+}
 
-  .cuisine-column {
-    width: 25%;
-  }
+.price-column {
+  width: 25%;
+}
 
-  .order-button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+.cuisine-column {
+  width: 25%;
+}
 
-  .order-button:hover {
-    background-color: #218838;
-  }
+.order-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.order-button:hover {
+  background-color: #218838;
+}

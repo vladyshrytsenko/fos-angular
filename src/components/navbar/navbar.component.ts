@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { StorageService } from '../../service/storage.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,15 +19,14 @@ export class NavbarComponent implements OnInit {
   public admin!: boolean;
 
   constructor(
-    private storageService: StorageService, 
     private userService: UserService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.authService.loginCallback();
-    
+
     this.admin = this.userService.isAdmin();
     this.userService.getCurrentUser().subscribe(
       (response: User) => {
@@ -41,7 +39,7 @@ export class NavbarComponent implements OnInit {
     );
   }
 
-  public onLogout() : void {
+  public onLogout(): void {
     console.log('entry point onLogout')
     this.authService.logout();
     this.router.navigate(['/login']);
