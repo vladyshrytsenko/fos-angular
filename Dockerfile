@@ -1,5 +1,4 @@
-FROM node:18.19.0-bullseye-slim
-
+FROM node:18.19.0-bullseye-slim AS build
 WORKDIR /project
 
 RUN npm install -g @angular/cli@13
@@ -9,5 +8,11 @@ RUN npm i
 
 COPY . .
 
-EXPOSE 4200
-CMD [ "npm", "start" ]
+RUN npm run build --prod
+
+FROM nginx:alpine
+
+COPY --from=build /project/dist/angular /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
