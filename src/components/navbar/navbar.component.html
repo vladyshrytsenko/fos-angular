@@ -17,7 +17,7 @@
       </li>
     </ul>
     <div class="ml-auto d-flex align-items-center">
-      <p class="text-white mb-0 mr-2">Welcome, {{user.email}}! ({{user.role}})</p>
+      <p *ngIf="user" class="text-white mb-0 mr-2">Welcome, {{user.email}}! ({{user.role}})</p>
       <button type="button" (click)="onLogout()" class="btn btn-danger">Logout</button>
     </div>
   </div>

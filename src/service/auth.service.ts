@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, tap } from "rxjs";
+import { BehaviorSubject, map, Observable, of, switchMap, tap } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { StorageService } from "./storage.service";
 import { OAuthService } from "angular-oauth2-oidc";
@@ -51,24 +51,23 @@ export class AuthService {
     });
   }
 
-  public loginCallback(): void {
-    this.route.queryParamMap.subscribe((params) => {
-      const code = params.get('code');
+  public loginCallback(): Observable<string | null> {
+    return this.route.queryParamMap.pipe(
 
-      if (code) {
-        this.exchangeCodeForToken(code).subscribe({
-          next: () => {
+      map((params) => params.get('code')),
+      switchMap((code) => {
+        if (!code) return of(null);
+  
+        return this.exchangeCodeForToken(code).pipe(
+          map((res: any) => {
             console.log('Token received, navigating to /menu');
-            console.log('token: ', this.storageService.getJwtToken());
             this.router.navigate(['/menu']);
-          },
-          error: (err) => {
-            this.router.navigate(['/login']);
-          }
-        });
-      }
-    });
-  }
+            return this.storageService.getJwtToken();
+          })
+        );
+      })
+    );
+  }  
 
   private exchangeCodeForToken(authCode: string) {
     const tokenUrl = `${this.apiServerUrl}/oauth2/token`;
